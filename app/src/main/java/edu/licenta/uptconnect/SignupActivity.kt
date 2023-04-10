@@ -3,11 +3,12 @@ package edu.licenta.uptconnect
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import edu.licenta.uptconnect.databinding.ActivityStartBinding
+import android.widget.Toast
+import edu.licenta.uptconnect.databinding.ActivitySignupBinding
 
-class StartActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityStartBinding
+    private lateinit var binding: ActivitySignupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +17,7 @@ class StartActivity : AppCompatActivity() {
     }
 
     private fun setBinding() {
-        binding = ActivityStartBinding.inflate(layoutInflater)
+        binding = ActivitySignupBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
@@ -28,8 +29,11 @@ class StartActivity : AppCompatActivity() {
         }
 
         binding.signupButton.setOnClickListener() {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
+            Toast.makeText(
+                this,
+                "To be implemented",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
