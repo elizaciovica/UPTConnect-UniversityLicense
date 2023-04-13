@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".HomeActivity"
-        android:background="#F6E3E6">
+        android:background="#B8DCE4">
 
     <ImageView
             android:id="@+id/profile_image"
