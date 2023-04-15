@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:showIn="navigation_view">
+    <item
+            android:id="@+id/main_item"
+            android:title="My profile">
+        <menu>
+            <item
+                    android:id="@+id/home"
+                    android:icon="@drawable/ic_baseline_home"
+                    android:title="Home"
+                    android:checkable="true"
+                    app:showAsAction="ifRoom"/>
+            <item
+                    android:id="@+id/edit_profile"
+                    android:icon="@drawable/ic_baseline_edit"
+                    android:title="Edit profile"
+                    android:checkable="true"
+                    app:showAsAction="ifRoom"/>
+            <item
+                    android:id="@+id/my_courses"
+                    android:icon="@drawable/ic_baseline_courses"
+                    android:title="My courses"
+                    android:checkable="true"
+                    app:showAsAction="ifRoom"/>
+            <item
+                    android:id="@+id/my_colleagues"
+                    android:icon="@drawable/ic_baseline_colleagues"
+                    android:title="My colleagues"
+                    android:checkable="true"
+                    app:showAsAction="ifRoom"/>
+            <item
+                    android:id="@+id/log_out"
+                    android:icon="@drawable/ic_baseline_logout"
+                    android:title="Log out"
+                    android:checkable="true"
+                    app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
+
+</menu>
