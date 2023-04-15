@@ -26,9 +26,12 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButton.setOnClickListener() {
             Toast.makeText(
                 this,
-                "To be implemented",
+                "To be changed",
                 Toast.LENGTH_SHORT
             ).show()
+
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
 
         binding.signupButton.setOnClickListener() {
