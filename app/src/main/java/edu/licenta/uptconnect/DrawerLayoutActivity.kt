@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 open class DrawerLayoutActivity : AppCompatActivity() {
 
@@ -84,7 +86,7 @@ open class DrawerLayoutActivity : AppCompatActivity() {
 
     private fun logoutAction() {
         val intent = Intent(this, StartActivity::class.java)
-        //Firebase.auth.signOut()
+        Firebase.auth.signOut()
         startActivity(intent)
         finish()
     }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "287334925741",
+    "project_id": "uptconnect-licenta",
+    "storage_bucket": "uptconnect-licenta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287334925741:android:2dbb95afbd42e73be8cd24",
+        "android_client_info": {
+          "package_name": "edu.licenta.uptconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287334925741-35t764vnm9dli56dqof0i0lkssh7a2hh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNjnrFfNFTpSonbih45HfrgJpYdmmgPM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287334925741-35t764vnm9dli56dqof0i0lkssh7a2hh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
