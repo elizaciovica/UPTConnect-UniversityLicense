@@ -1,9 +1,16 @@
 package edu.licenta.uptconnect
 
+import android.content.ContentValues
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import edu.licenta.uptconnect.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -24,19 +31,89 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initializeButtons() {
         binding.loginButton.setOnClickListener() {
-            Toast.makeText(
-                this,
-                "To be changed",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            loginAction()
         }
 
         binding.signupButton.setOnClickListener() {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun loginAction() {
+        when {
+            TextUtils.isEmpty(binding.email.text.toString().trim { it <= ' ' }) -> {
+                Toast.makeText(
+                    this, "Please enter email.", Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            TextUtils.isEmpty(binding.password.text.toString().trim { it <= ' ' }) -> {
+                Toast.makeText(
+                    this, "Please enter password.", Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {
+                val email: String = binding.email.text.toString().trim { it <= ' ' }
+                val password: String = binding.password.text.toString().trim { it <= ' ' }
+
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val firebaseUser: FirebaseUser = task.result!!.user!!
+                            startApplication(firebaseUser, email)
+                        } else {
+                            Toast.makeText(
+                                this, task.exception!!.message.toString(), Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun startApplication(
+        firebaseUser: FirebaseUser, email: String
+    ) {
+        val studentsDatabase = Firebase.firestore
+        val studentReference = studentsDatabase.collection("students").document(firebaseUser.uid)
+        studentReference.get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                val data = document.data
+                var hasEmptyFields = false
+                for ((key, value) in data!!) {
+                    if (value == null || value == "") {
+                        hasEmptyFields = true
+                        break
+                    }
+                }
+                if (hasEmptyFields) {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra("userId", firebaseUser.uid)
+                    intent.putExtra("email", email)
+                    startActivity(intent)
+                    Toast.makeText(
+                        this, "You need to complete your details first.", Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                } else {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra("userId", firebaseUser.uid)
+                    intent.putExtra("email", email)
+                    startActivity(intent)
+                    Toast.makeText(
+                        this, "Welcome!", Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+            }
+        }.addOnFailureListener { e ->
+            Log.w(
+                ContentValues.TAG, "Error retrieving Student Document", e
+            )
         }
     }
 }

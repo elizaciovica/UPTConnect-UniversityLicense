@@ -1,12 +1,17 @@
 package edu.licenta.uptconnect
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import edu.licenta.uptconnect.databinding.ActivitySignupBinding
 
 class SignupActivity : AppCompatActivity() {
@@ -69,7 +74,8 @@ class SignupActivity : AppCompatActivity() {
                                     "Account successfully created",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                startApplication(firebaseUser, email)
+                                createUserFirestoreDetails(firebaseUser.uid, email)
+                                startCompleteProfile(firebaseUser, email)
                             } else {
                                 Toast.makeText(
                                     this,
@@ -81,7 +87,7 @@ class SignupActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "Please enter a student mail.",
+                        "Please enter a valid student mail.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -89,7 +95,27 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun startApplication(firebaseUser: FirebaseUser, email: String) {
+    private fun createUserFirestoreDetails(studentUid: String, studentEmail: String) {
+        val studentsDatabase = Firebase.firestore
+
+        val student = hashMapOf(
+            "Uid" to studentUid,
+            "Email" to studentEmail,
+            "FirstName" to null,
+            "LastName" to null,
+            "Faculty" to null,
+            "Section" to null,
+            "RegistrationNumber" to null,
+            "ProfileImageURL" to null
+        )
+
+        studentsDatabase.collection("students").document(studentUid)
+            .set(student, SetOptions.merge())
+            .addOnSuccessListener { Log.d(TAG, "Student Document successfully created!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error creating Student Document", e) }
+    }
+
+    private fun startCompleteProfile(firebaseUser: FirebaseUser, email: String) {
         val intent = Intent(this, ProfileActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         intent.putExtra("userId", firebaseUser.uid)
