@@ -105,8 +105,8 @@ class SignupActivity : AppCompatActivity() {
             "LastName" to null,
             "Faculty" to null,
             "Section" to null,
-            "RegistrationNumber" to null,
-            "ProfileImageURL" to null
+            "StudyYear" to null,
+            "RegistrationNumber" to null
         )
 
         studentsDatabase.collection("students").document(studentUid)
