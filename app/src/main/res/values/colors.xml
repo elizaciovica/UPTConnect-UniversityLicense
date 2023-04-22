@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="grey">#91908F</color>
+    <color name="mine1">#E4B7A0</color>
+    <color name="mine2">#DAFDC9</color>
+    <color name="mine3">#C9D4FD</color>
+    <color name="mine4">#FDC9D2</color>
+    <color name="mine5">#FDF5C9</color>
+    <color name="mine6">#FDD2C9</color>
+    <color name="mine7">#C9FDF4</color>
 </resources>

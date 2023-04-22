@@ -1,15 +1,19 @@
 package edu.licenta.uptconnect
 
 import android.content.ContentValues
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import edu.licenta.uptconnect.adapter.MandatoryCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
+import edu.licenta.uptconnect.model.Course
 
 class GroupsActivity : DrawerLayoutActivity() {
 
@@ -21,9 +25,10 @@ class GroupsActivity : DrawerLayoutActivity() {
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
-           1
+            1
         )
         getProfileDetails()
+        seeMandatoryCourses()
     }
 
     private fun setBinding() {
@@ -32,7 +37,60 @@ class GroupsActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
-    private fun intializeButton() {
+    private fun seeMandatoryCourses() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        //for adapter
+        val studentsDatabase = Firebase.firestore
+        val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
+        val coursesRef = studentsDatabase.collection("courses")
+        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
+        studentDoc.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    coursesRef.whereEqualTo("Section", documentSnapshot.getString("Section"))
+                        .whereEqualTo("Year", documentSnapshot.getString("StudyYear"))
+                        .whereEqualTo("Mandatory", true)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            println(documentSnapshot.getString("Year"))
+                            println(documentSnapshot.getString("Section"))
+                            val coursesList = mutableListOf<Course>()
+                            println(documents)
+                            for (document in documents) {
+                                val courseId = document.id
+                                val courseData = document.data
+                                val name = courseData["Name"] as String
+                                val section = courseData["Section"] as String
+                                val year = courseData["Year"] as String
+                                val mandatory = courseData["Mandatory"] as Boolean
+                                val examination = courseData["Examination"] as String
+                                val teachingWay = courseData["Teaching Way"]
+                                val course = Course(
+                                    courseId,
+                                    name,
+                                    section,
+                                    year,
+                                    mandatory,
+                                    examination,
+                                    teachingWay!!
+                                )
+                                coursesList.add(course)
+                            }
+                            val adapter = MandatoryCourseAdapter(coursesList)
+                            binding.recyclerView.adapter = adapter
+                            binding.recyclerView.adapter?.notifyDataSetChanged()
+                            binding.progressBar.isVisible = false
+                            binding.recyclerView.isVisible = true
+                        } .addOnFailureListener { exception ->
+                            Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
+            }
+
 
     }
 
