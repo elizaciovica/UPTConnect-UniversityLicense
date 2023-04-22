@@ -90,14 +90,16 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:background="@drawable/rounded_corners"
                     android:layout_marginTop="40dp"
-                    android:hint="Faculty">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/faculty_name"
+                <AutoCompleteTextView
+                        android:id="@+id/auto_complete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
+                        android:backgroundTint="#FDEEEE"
+                        android:hint="Faculty"
+                        android:inputType="none"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -109,14 +111,16 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:background="@drawable/rounded_corners"
                     android:layout_marginTop="40dp"
-                    android:hint="Section">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/section_name"
+                <AutoCompleteTextView
+                        android:id="@+id/auto_complete_section"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
+                        android:backgroundTint="#FDEEEE"
+                        android:hint="Section"
+                        android:inputType="none"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -128,33 +132,16 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:background="@drawable/rounded_corners"
                     android:layout_marginTop="40dp"
-                    android:hint="Study Year">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/study_year"
+                <AutoCompleteTextView
+                        android:id="@+id/auto_complete_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/registration_number_id"
-                    android:layout_width="350dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/study_year_id"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:background="@drawable/rounded_corners"
-                    android:layout_marginTop="40dp"
-                    android:hint="Registration Number">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/registration_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
+                        android:backgroundTint="#FDEEEE"
+                        android:hint="Year"
+                        android:inputType="none"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -168,7 +155,7 @@
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"
                     android:backgroundTint="#FDEEEE"
-                    app:layout_constraintTop_toBottomOf="@id/registration_number_id"
+                    app:layout_constraintTop_toBottomOf="@id/study_year_id"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginTop="40dp"/>
