@@ -1,7 +1,7 @@
 package edu.licenta.uptconnect
 
-import android.content.ContentValues.TAG
-import android.content.Intent
+import android.content.ContentValues
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -9,12 +9,11 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import edu.licenta.uptconnect.databinding.ActivityHomeBinding
+import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
 
-class HomeActivity : DrawerLayoutActivity() {
+class GroupsActivity : DrawerLayoutActivity() {
 
-    private val screenId: Int = 1
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityGroupsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,28 +21,19 @@ class HomeActivity : DrawerLayoutActivity() {
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
-            screenId
+           1
         )
         getProfileDetails()
-        initializeButtons()
     }
 
     private fun setBinding() {
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityGroupsBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
 
-    private fun initializeButtons() {
-        binding.groupsCard.setOnClickListener() {
-            val email: String = intent.getStringExtra("email").toString()
-            val firebaseUser = intent.getStringExtra("userId").toString()
-            val intent = Intent(this, GroupsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra("userId", firebaseUser)
-            intent.putExtra("email", email)
-            startActivity(intent)
-        }
+    private fun intializeButton() {
+
     }
 
     private fun getProfileDetails() {
@@ -69,9 +59,8 @@ class HomeActivity : DrawerLayoutActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "Error retrieving Student Name. ", exception)
+                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
 
     }
-
 }
