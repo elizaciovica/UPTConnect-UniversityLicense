@@ -15,6 +15,13 @@
             android:theme="@style/Theme.UPTConnect"
             tools:targetApi="31">
         <activity
+                android:name=".StudentCourseEnrollActivity"
+                android:exported="false">
+            <meta-data
+                    android:name="android.app.lib_name"
+                    android:value="" />
+        </activity>
+        <activity
                 android:name=".EnrollRequestsActivity"
                 android:exported="false">
             <meta-data

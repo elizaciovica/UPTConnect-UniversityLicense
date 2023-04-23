@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.model.Course
 
-class CourseAdapter(
-    private val dataSet: List<Course>,
-    private val activity: Activity
+class EnrollCourseAdapter(
+    private val dataSet: List<Course>
 ) :
-    RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
+    RecyclerView.Adapter<EnrollCourseAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context = itemView.context
         val courseName = itemView.findViewById<TextView>(R.id.name)
@@ -35,6 +34,8 @@ class CourseAdapter(
         viewHolder.enrollButton.setOnClickListener() {
             //send request to admin
             viewHolder.enrollButton.setBackgroundColor(viewHolder.itemView.resources.getColor(R.color.grey))
+            viewHolder.enrollButton.isClickable = false
+            viewHolder.enrollButton.text = "SENT"
         }
     }
 

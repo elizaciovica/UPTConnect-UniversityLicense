@@ -1,7 +1,6 @@
 package edu.licenta.uptconnect
 
 import android.content.ContentValues
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
@@ -12,13 +11,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.adapter.EnrollCourseAdapter
-import edu.licenta.uptconnect.adapter.MandatoryCourseAdapter
-import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
+import edu.licenta.uptconnect.databinding.ActivityStudentCourseEnrollBinding
 import edu.licenta.uptconnect.model.Course
 
-class GroupsActivity : DrawerLayoutActivity() {
+class StudentCourseEnrollActivity : DrawerLayoutActivity() {
 
-    private lateinit var binding: ActivityGroupsBinding
+    private lateinit var binding: ActivityStudentCourseEnrollBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,31 +27,19 @@ class GroupsActivity : DrawerLayoutActivity() {
             0
         )
         getProfileDetails()
-        seeMandatoryCourses()
-        initializeButtons()
+        seeAvailableCourses()
     }
 
     private fun setBinding() {
-        binding = ActivityGroupsBinding.inflate(layoutInflater)
+        binding = ActivityStudentCourseEnrollBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
 
-    private fun initializeButtons() {
-        binding.enrollButton.setOnClickListener() {
-            val email: String = intent.getStringExtra("email").toString()
-            val firebaseUser: String = intent.getStringExtra("userId").toString()
-            val intent = Intent(this, StudentCourseEnrollActivity::class.java)
-            intent.putExtra("userId", firebaseUser)
-            intent.putExtra("email", email)
-            startActivity(intent)
-        }
-    }
-
-    private fun seeMandatoryCourses() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+    private fun seeAvailableCourses() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewEnroll)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        //for adapter
+
         val studentsDatabase = Firebase.firestore
         val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
@@ -63,7 +49,7 @@ class GroupsActivity : DrawerLayoutActivity() {
                 if (documentSnapshot.exists()) {
                     coursesRef.whereEqualTo("Section", documentSnapshot.getString("Section"))
                         .whereEqualTo("Year", documentSnapshot.getString("StudyYear"))
-                        .whereEqualTo("Mandatory", true)
+                        .whereEqualTo("Mandatory", false)
                         .get()
                         .addOnSuccessListener { documents ->
                             val coursesList = mutableListOf<Course>()
@@ -87,11 +73,11 @@ class GroupsActivity : DrawerLayoutActivity() {
                                 )
                                 coursesList.add(course)
                             }
-                            val adapter = MandatoryCourseAdapter(coursesList)
-                            binding.recyclerView.adapter = adapter
-                            binding.recyclerView.adapter?.notifyDataSetChanged()
+                            val adapter = EnrollCourseAdapter(coursesList)
+                            binding.recyclerViewEnroll.adapter = adapter
+                            binding.recyclerViewEnroll.adapter?.notifyDataSetChanged()
                             binding.progressBar.isVisible = false
-                            binding.recyclerView.isVisible = true
+                            binding.recyclerViewEnroll.isVisible = true
                         }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
                         }
@@ -100,8 +86,6 @@ class GroupsActivity : DrawerLayoutActivity() {
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
-
-
     }
 
     private fun getProfileDetails() {
