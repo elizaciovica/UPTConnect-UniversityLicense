@@ -161,7 +161,8 @@ class ProfileActivity : AppCompatActivity() {
                         "LastName", binding.lastName.text.toString(),
                         "Faculty", chosenFaculty,
                         "Section", chosenSection,
-                        "StudyYear", chosenYear
+                        "StudyYear", chosenYear,
+                        "IsAdmin", false
                     )
 
                 val intent = Intent(this, HomeActivity::class.java)

@@ -53,10 +53,7 @@ class GroupsActivity : DrawerLayoutActivity() {
                         .whereEqualTo("Mandatory", true)
                         .get()
                         .addOnSuccessListener { documents ->
-                            println(documentSnapshot.getString("Year"))
-                            println(documentSnapshot.getString("Section"))
                             val coursesList = mutableListOf<Course>()
-                            println(documents)
                             for (document in documents) {
                                 val courseId = document.id
                                 val courseData = document.data
