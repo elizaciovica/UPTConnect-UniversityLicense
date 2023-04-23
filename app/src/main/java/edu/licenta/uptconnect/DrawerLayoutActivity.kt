@@ -53,6 +53,7 @@ open class DrawerLayoutActivity : AppCompatActivity() {
         }
 
         when (screen) {
+            0 -> navigation.setCheckedItem(0)
             1 -> navigation.setCheckedItem(R.id.home)
             2 -> navigation.setCheckedItem(R.id.edit_profile)
             3 -> navigation.setCheckedItem(R.id.my_courses)
@@ -67,8 +68,12 @@ open class DrawerLayoutActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         if (item.itemId == R.id.home) {
-            Toast.makeText(applicationContext, "Clicked home", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("userId", FirebaseAuth.getInstance().currentUser!!.uid)
+            intent.putExtra("email", FirebaseAuth.getInstance().currentUser!!.email)
+            startActivity(intent)
             return true
         }
         if (item.itemId == R.id.edit_profile) {

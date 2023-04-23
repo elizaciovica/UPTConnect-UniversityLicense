@@ -139,6 +139,10 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setProfileImage(studentUid: String) {
+
+        val email: String = intent.getStringExtra("email").toString()
+        val firebaseUser = intent.getStringExtra("userId").toString()
+
         binding.uploadProfilePicture.setOnClickListener() {
             selectImage()
         }
@@ -166,6 +170,8 @@ class ProfileActivity : AppCompatActivity() {
                     )
 
                 val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("userId", firebaseUser)
+                intent.putExtra("email", email)
                 startActivity(intent)
             }
         }

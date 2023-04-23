@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -25,7 +24,7 @@ class GroupsActivity : DrawerLayoutActivity() {
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
-            1
+            0
         )
         getProfileDetails()
         seeMandatoryCourses()
@@ -42,7 +41,7 @@ class GroupsActivity : DrawerLayoutActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         //for adapter
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
+        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
         studentDoc.get()
@@ -79,7 +78,7 @@ class GroupsActivity : DrawerLayoutActivity() {
                             binding.recyclerView.adapter?.notifyDataSetChanged()
                             binding.progressBar.isVisible = false
                             binding.recyclerView.isVisible = true
-                        } .addOnFailureListener { exception ->
+                        }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
                         }
                 }
@@ -101,7 +100,7 @@ class GroupsActivity : DrawerLayoutActivity() {
         }
 
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
+        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
         // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
         // ex .get() - documentSnapshot is like a response body
