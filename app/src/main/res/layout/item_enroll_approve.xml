@@ -37,7 +37,7 @@
                     android:layout_marginLeft="20dp"/>
 
             <TextView
-                    android:id="@+id/course_name"
+                    android:id="@+id/name_request_student"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name of Student"
@@ -72,7 +72,7 @@
                     android:layout_marginLeft="20dp"/>
 
             <TextView
-                    android:id="@+id/name"
+                    android:id="@+id/name_request_course"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name of Course"

@@ -88,7 +88,7 @@
                             android:id="@+id/text_enroll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="CTI-EN Requests"
+                            android:text="Section Requests"
                             android:textSize="30sp"
                             android:textStyle="bold"
                             android:layout_marginTop="20dp"
@@ -99,7 +99,7 @@
                             android:layout_marginHorizontal="40dp"/>
 
                     <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
+                            android:id="@+id/recyclerViewRequests"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:dividerHeight="4dp"
@@ -110,7 +110,7 @@
                             android:layout_marginTop="40dp"/>
 
                     <RelativeLayout
-                            android:id="@+id/viewForNoConnections"
+                            android:id="@+id/viewForNoRequests"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="15dp"
