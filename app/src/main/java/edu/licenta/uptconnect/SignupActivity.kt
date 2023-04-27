@@ -106,7 +106,7 @@ class SignupActivity : AppCompatActivity() {
             "Faculty" to null,
             "Section" to null,
             "StudyYear" to null,
-            "RegistrationNumber" to null
+            "IsAdmin" to null
         )
 
         studentsDatabase.collection("students").document(studentUid)

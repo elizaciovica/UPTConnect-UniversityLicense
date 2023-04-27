@@ -53,7 +53,6 @@ class LoginActivity : AppCompatActivity() {
                     this, "Please enter password.", Toast.LENGTH_SHORT
                 ).show()
             }
-
             else -> {
                 val email: String = binding.email.text.toString().trim { it <= ' ' }
                 val password: String = binding.password.text.toString().trim { it <= ' ' }
@@ -61,8 +60,24 @@ class LoginActivity : AppCompatActivity() {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            val firebaseUser: FirebaseUser = task.result!!.user!!
-                            startApplication(firebaseUser, email)
+                            val studentsDatabase = Firebase.firestore
+                            val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
+                            val studentDoc = studentsDatabase.collection("students")
+                                .document(studentFirebaseId!!)
+
+                            studentDoc
+                                .get()
+                                .addOnSuccessListener { documentSnapshot ->
+                                    if (documentSnapshot.exists() &&
+                                        documentSnapshot.getBoolean("IsAdmin") == true
+                                    ) {
+                                        val intent = Intent(this, AdminHomeActivity::class.java)
+                                        startActivity(intent)
+                                    } else {
+                                        val firebaseUser: FirebaseUser = task.result!!.user!!
+                                        startApplication(firebaseUser, email)
+                                    }
+                                }
                         } else {
                             Toast.makeText(
                                 this, task.exception!!.message.toString(), Toast.LENGTH_SHORT
@@ -77,7 +92,8 @@ class LoginActivity : AppCompatActivity() {
         firebaseUser: FirebaseUser, email: String
     ) {
         val studentsDatabase = Firebase.firestore
-        val studentReference = studentsDatabase.collection("students").document(firebaseUser.uid)
+        val studentReference =
+            studentsDatabase.collection("students").document(firebaseUser.uid)
         studentReference.get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
                 val data = document.data
@@ -90,7 +106,8 @@ class LoginActivity : AppCompatActivity() {
                 }
                 if (hasEmptyFields) {
                     val intent = Intent(this, ProfileActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     intent.putExtra("userId", firebaseUser.uid)
                     intent.putExtra("email", email)
                     startActivity(intent)
@@ -100,7 +117,8 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 } else {
                     val intent = Intent(this, HomeActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     intent.putExtra("userId", firebaseUser.uid)
                     intent.putExtra("email", email)
                     startActivity(intent)
