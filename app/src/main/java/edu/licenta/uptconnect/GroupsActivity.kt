@@ -66,32 +66,38 @@ class GroupsActivity : DrawerLayoutActivity() {
                         .whereEqualTo("Mandatory", true)
                         .get()
                         .addOnSuccessListener { documents ->
-                            val coursesList = mutableListOf<Course>()
-                            for (document in documents) {
-                                val courseId = document.id
-                                val courseData = document.data
-                                val name = courseData["Name"] as String
-                                val section = courseData["Section"] as String
-                                val year = courseData["Year"] as String
-                                val mandatory = courseData["Mandatory"] as Boolean
-                                val examination = courseData["Examination"] as String
-                                val teachingWay = courseData["Teaching Way"]
-                                val course = Course(
-                                    courseId,
-                                    name,
-                                    section,
-                                    year,
-                                    mandatory,
-                                    examination,
-                                    teachingWay!!
-                                )
-                                coursesList.add(course)
+                            if (documents.isEmpty) {
+                                binding.progressBar.isVisible = false
+                                binding.recyclerView.isVisible = false
+                                binding.viewForNoCourses.isVisible = true
+                            } else {
+                                val coursesList = mutableListOf<Course>()
+                                for (document in documents) {
+                                    val courseId = document.id
+                                    val courseData = document.data
+                                    val name = courseData["Name"] as String
+                                    val section = courseData["Section"] as String
+                                    val year = courseData["Year"] as String
+                                    val mandatory = courseData["Mandatory"] as Boolean
+                                    val examination = courseData["Examination"] as String
+                                    val teachingWay = courseData["Teaching Way"]
+                                    val course = Course(
+                                        courseId,
+                                        name,
+                                        section,
+                                        year,
+                                        mandatory,
+                                        examination,
+                                        teachingWay!!
+                                    )
+                                    coursesList.add(course)
+                                }
+                                val adapter = MandatoryCourseAdapter(coursesList)
+                                binding.recyclerView.adapter = adapter
+                                binding.recyclerView.adapter?.notifyDataSetChanged()
+                                binding.progressBar.isVisible = false
+                                binding.recyclerView.isVisible = true
                             }
-                            val adapter = MandatoryCourseAdapter(coursesList)
-                            binding.recyclerView.adapter = adapter
-                            binding.recyclerView.adapter?.notifyDataSetChanged()
-                            binding.progressBar.isVisible = false
-                            binding.recyclerView.isVisible = true
                         }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
                         }
