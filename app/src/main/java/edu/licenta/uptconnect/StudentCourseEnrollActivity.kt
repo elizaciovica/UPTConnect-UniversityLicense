@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -78,6 +79,7 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
                                         examination,
                                         teachingWay!!,
                                         studentFirebaseId,
+                                        documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName"),
                                         CourseEnrollRequestStatus.INITIAL
                                     )
                                     coursesList.add(course)

@@ -36,7 +36,7 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val requestsDatabase = Firebase.firestore
-
+//todo doar cele cu sent
         val requestsDoc = requestsDatabase.collection("courseEnrollRequests")
         requestsDoc.get()
             .addOnSuccessListener { result ->
@@ -53,11 +53,15 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
                         val courseEnrollRequestStatus =
                             requestData["courseEnrollRequestStatus"] as String
                         val studentId = requestData["studentId"] as String
+                        val studentName = requestData["studentName"] as String
+                        val courseName = requestData["courseName"] as String
                         val course = EnrollRequest(
                             requestId,
                             courseId,
                             courseEnrollRequestStatus,
-                            studentId
+                            studentId,
+                            studentName,
+                            courseName
                         )
                         requestsList.add(course)
                     }

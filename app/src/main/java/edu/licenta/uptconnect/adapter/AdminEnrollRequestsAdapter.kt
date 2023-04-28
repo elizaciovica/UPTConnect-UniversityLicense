@@ -36,14 +36,14 @@ class AdminEnrollRequestsAdapter(
     override fun onBindViewHolder(viewHolder: AdminEnrollRequestsAdapter.ViewHolder, position: Int) {
         val requestsDatabase = Firebase.firestore
 
-        viewHolder.courseName.text = dataSet[position].courseId
-        viewHolder.studentName.text = dataSet[position].studentId
+        viewHolder.courseName.text = dataSet[position].courseName
+        viewHolder.studentName.text = dataSet[position].studentName
 
         viewHolder.declineButton.setOnClickListener() {
             requestsDatabase.collection("courseEnrollRequests").document(dataSet[position].courseId)
                 .delete()
                 .addOnSuccessListener {
-                    Log.d(TAG, "DRequest successfully deleted!")
+                    Log.d(TAG, "Request successfully deleted!")
                     notifyItemRemoved(position)
                 }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
