@@ -1,23 +1,27 @@
 package edu.licenta.uptconnect
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import edu.licenta.uptconnect.adapter.AdminEnrollRequestsAdapter
-import edu.licenta.uptconnect.adapter.EnrollCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityAdminenrollrequestsBinding
 import edu.licenta.uptconnect.model.EnrollRequest
 
 class AdminEnrollRequestsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminenrollrequestsBinding
-    private var requestsLiveData = MutableLiveData<List<EnrollRequest>>()
+    private lateinit var requestsAdapter: FirestoreRecyclerAdapter<EnrollRequest, AdminEnrollRequestsViewHolder>
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,62 +36,81 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
     }
 
     private fun seeAllRequests() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewRequests)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
         val requestsDatabase = Firebase.firestore
-//todo doar cele cu sent
-        val requestsDoc = requestsDatabase.collection("courseEnrollRequests")
-        requestsDoc.get()
-            .addOnSuccessListener { result ->
-                if (result.isEmpty) {
-                    binding.progressBar.isVisible = false
-                    binding.recyclerViewRequests.isVisible = false
-                    binding.viewForNoRequests.isVisible = true
-                } else {
-                    val requestsList = mutableListOf<EnrollRequest>()
-                    for (document in result) {
-                        val requestId = document.id
-                        val requestData = document.data
-                        val courseId = requestData["courseId"] as String
-                        val courseEnrollRequestStatus =
-                            requestData["courseEnrollRequestStatus"] as String
-                        val studentId = requestData["studentId"] as String
-                        val studentName = requestData["studentName"] as String
-                        val courseName = requestData["courseName"] as String
-                        val course = EnrollRequest(
-                            requestId,
-                            courseId,
-                            courseEnrollRequestStatus,
-                            studentId,
-                            studentName,
-                            courseName
-                        )
-                        requestsList.add(course)
-                    }
-                    requestsLiveData.postValue(requestsList)
-                    val adapter = AdminEnrollRequestsAdapter(requestsList)
-                    binding.recyclerViewRequests.adapter = adapter
-                    adapter.notifyDataSetChanged()
+        val requestsDocQuery = requestsDatabase.collection("courseEnrollRequests")
+        val allRequests = FirestoreRecyclerOptions.Builder<EnrollRequest>()
+            .setQuery(requestsDocQuery, EnrollRequest::class.java).build()
 
-                    observeClientLiveData().observe(this) {
-                        requestsList ->
-                        if(requestsList.isNotEmpty()) {
-                            binding.progressBar.isVisible = false
-                            binding.recyclerViewRequests.isVisible = true
-
-                        } else {
-                            binding.progressBar.isVisible = false
-                            binding.recyclerViewRequests.isVisible = false
-                            binding.viewForNoRequests.isVisible = true
-                        }
-                    }
-                }
-
-            }
+        requestsAdapter = AdminEnrollRequestsFirestoreAdapter(allRequests)
+        linearLayoutManager = LinearLayoutManager(this)
+        binding.recyclerViewRequests.layoutManager = linearLayoutManager
+        binding.recyclerViewRequests.adapter = requestsAdapter
+        binding.recyclerViewRequests.adapter?.notifyDataSetChanged()
     }
 
-    private fun observeClientLiveData(): LiveData<List<EnrollRequest>> {
-        return requestsLiveData
+    private inner class AdminEnrollRequestsViewHolder(private val view: View) :
+        RecyclerView.ViewHolder(view) {
+        fun setRequestDetails(courseNameText: String, studentNameText: String) {
+            val courseName = itemView.findViewById<TextView>(R.id.name_request_course)
+            val studentName = itemView.findViewById<TextView>(R.id.name_request_student)
+            courseName.text = courseNameText
+            studentName.text = studentNameText
+        }
+    }
+
+    private inner class AdminEnrollRequestsFirestoreAdapter(options: FirestoreRecyclerOptions<EnrollRequest>) :
+        FirestoreRecyclerAdapter<EnrollRequest, AdminEnrollRequestsViewHolder>(options) {
+
+        override fun onBindViewHolder(
+            requestViewHolder: AdminEnrollRequestsViewHolder,
+            position: Int,
+            request: EnrollRequest
+        ) {
+            requestViewHolder.setRequestDetails(request.courseName, request.studentName)
+
+            val docId = requestsAdapter.snapshots.getSnapshot(position).id
+            val requestsDatabase = Firebase.firestore
+            val declineButton = requestViewHolder.itemView.findViewById<Button>(R.id.decline)
+
+            declineButton.setOnClickListener() {
+                requestsDatabase.collection("courseEnrollRequests").document(docId)
+                    .delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "The request has been rejected",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "Failed to delete request",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): AdminEnrollRequestsViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_enroll_approve, parent, false)
+            return AdminEnrollRequestsViewHolder(view)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requestsAdapter!!.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (requestsAdapter != null) {
+            requestsAdapter!!.stopListening()
+        }
     }
 }
