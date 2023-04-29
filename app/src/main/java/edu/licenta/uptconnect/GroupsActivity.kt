@@ -22,6 +22,8 @@ class GroupsActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityGroupsBinding
     private var coursesList = mutableListOf<Course>()
+    private var studentFirebaseId = ""
+    private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,6 +148,9 @@ class GroupsActivity : DrawerLayoutActivity() {
 
                                 adapter.onItemClick = {
                                     val intent = Intent(this, IndividualGroupActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    intent.putExtra("userId", studentFirebaseId)
+                                    intent.putExtra("email", email)
                                     intent.putExtra("course", it)
                                     startActivity(intent)
                                 }
@@ -161,16 +166,15 @@ class GroupsActivity : DrawerLayoutActivity() {
     }
 
     private fun getProfileDetails() {
-        val email: String = intent.getStringExtra("email").toString()
+        email = intent.getStringExtra("email").toString()
         val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        println("images/profileImage$email")
         storageRef.downloadUrl.addOnSuccessListener { uri ->
             val imageURL = uri.toString()
             Picasso.get().load(imageURL).into(binding.profileImage)
         }
 
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
         // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
         // ex .get() - documentSnapshot is like a response body
@@ -185,6 +189,5 @@ class GroupsActivity : DrawerLayoutActivity() {
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
-
     }
 }

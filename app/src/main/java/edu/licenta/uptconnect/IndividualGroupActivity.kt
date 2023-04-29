@@ -17,6 +17,8 @@ import edu.licenta.uptconnect.model.Course
 class IndividualGroupActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityIndividualGroupBinding
+    private var studentFirebaseId = ""
+    private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,27 +41,27 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
     private fun initializeButtons() {
         binding.chatCard.setOnClickListener() {
             val course = intent.getParcelableExtra<Course>("course")!!
-            val intent = Intent(this, IndividualGroupActivity::class.java)
+            val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("course", course)
+            intent.putExtra("email", email)
+            intent.putExtra("userId", studentFirebaseId)
             startActivity(intent)
         }
     }
 
     private fun getProfileDetails() {
-        val email: String = intent.getStringExtra("email").toString()
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        println("HEREEE" + email)
+        println("@HEREE" + studentFirebaseId)
         val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        println("images/profileImage$email")
         storageRef.downloadUrl.addOnSuccessListener { uri ->
             val imageURL = uri.toString()
             Picasso.get().load(imageURL).into(binding.profileImage)
         }
 
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
-        // ex .get() - documentSnapshot is like a response body
-        //binding the dynamic linking for the xml component and the content
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {

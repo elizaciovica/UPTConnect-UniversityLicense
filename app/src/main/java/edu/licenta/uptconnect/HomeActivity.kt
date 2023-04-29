@@ -15,6 +15,8 @@ class HomeActivity : DrawerLayoutActivity() {
 
     private val screenId: Int = 1
     private lateinit var binding: ActivityHomeBinding
+    private var studentFirebaseId = ""
+    private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +38,17 @@ class HomeActivity : DrawerLayoutActivity() {
 
     private fun initializeButtons() {
         binding.groupsCard.setOnClickListener() {
-            val email: String = intent.getStringExtra("email").toString()
-            val firebaseUser = intent.getStringExtra("userId").toString()
             val intent = Intent(this, GroupsActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra("userId", firebaseUser)
+            intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
             startActivity(intent)
         }
     }
 
     private fun getProfileDetails() {
-        val email: String = intent.getStringExtra("email").toString()
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
         val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
         println("images/profileImage$email")
         storageRef.downloadUrl.addOnSuccessListener { uri ->

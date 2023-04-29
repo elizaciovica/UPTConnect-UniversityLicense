@@ -30,6 +30,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initializeButtons() {
+        // FIXME: delete me - and do not commit me!
+        //forcedLogin("sign@student.upt.ro", "111111")
+
         binding.loginButton.setOnClickListener() {
             loginAction()
         }
@@ -38,6 +41,36 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun forcedLogin(email: String, password: String) {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val studentsDatabase = Firebase.firestore
+                    val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
+                    val studentDoc = studentsDatabase.collection("students")
+                        .document(studentFirebaseId!!)
+
+                    studentDoc
+                        .get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists() &&
+                                documentSnapshot.getBoolean("IsAdmin") == true
+                            ) {
+                                val intent = Intent(this, AdminHomeActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                val firebaseUser: FirebaseUser = task.result!!.user!!
+                                startApplication(firebaseUser, email)
+                            }
+                        }
+                } else {
+                    Toast.makeText(
+                        this, task.exception!!.message.toString(), Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
     }
 
     private fun loginAction() {
