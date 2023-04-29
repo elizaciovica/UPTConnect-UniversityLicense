@@ -15,10 +15,13 @@ import edu.licenta.uptconnect.adapter.EnrollCourseAdapter
 import edu.licenta.uptconnect.adapter.MandatoryCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
 import edu.licenta.uptconnect.model.Course
+import edu.licenta.uptconnect.model.CourseEnrollRequest
+import edu.licenta.uptconnect.model.CourseEnrollRequestStatus
 
 class GroupsActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityGroupsBinding
+    private var coursesList = mutableListOf<Course>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +56,55 @@ class GroupsActivity : DrawerLayoutActivity() {
     private fun seeMandatoryCourses() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        //for adapter
+
         val studentsDatabase = Firebase.firestore
         val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
+
+        //for the accepted courses
+        studentDoc.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val acceptedCourses = documentSnapshot.get("acceptedCourses") as? List<String>
+                    coursesRef
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            if (documents.isEmpty) {
+                                binding.progressBar.isVisible = false
+                                binding.recyclerView.isVisible = false
+                                binding.viewForNoCourses.isVisible = true
+                            } else {
+                                for (document in documents) {
+                                    if (acceptedCourses != null && acceptedCourses.contains(document.id)) {
+                                        val courseId = document.id
+                                        val courseData = document.data
+                                        val name = courseData["Name"] as String
+                                        val section = courseData["Section"] as String
+                                        val year = courseData["Year"] as String
+                                        val mandatory = courseData["Mandatory"] as Boolean
+                                        val examination = courseData["Examination"] as String
+                                        val teachingWay = courseData["Teaching Way"]
+                                        val course = Course(
+                                            courseId,
+                                            name,
+                                            section,
+                                            year,
+                                            mandatory,
+                                            examination,
+                                            teachingWay!!
+                                        )
+                                        coursesList.add(course)
+                                    }
+                                }
+                            }
+                        }.addOnFailureListener { exception ->
+                            Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
+                        }
+                }
+            }
+
+        //for the mandatory courses
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
@@ -71,7 +118,6 @@ class GroupsActivity : DrawerLayoutActivity() {
                                 binding.recyclerView.isVisible = false
                                 binding.viewForNoCourses.isVisible = true
                             } else {
-                                val coursesList = mutableListOf<Course>()
                                 for (document in documents) {
                                     val courseId = document.id
                                     val courseData = document.data
@@ -106,8 +152,6 @@ class GroupsActivity : DrawerLayoutActivity() {
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
-
-
     }
 
     private fun getProfileDetails() {

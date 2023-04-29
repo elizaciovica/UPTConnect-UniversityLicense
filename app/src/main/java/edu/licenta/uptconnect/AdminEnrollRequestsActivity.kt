@@ -1,6 +1,8 @@
 package edu.licenta.uptconnect
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.licenta.uptconnect.databinding.ActivityAdminenrollrequestsBinding
@@ -38,6 +41,7 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
     private fun seeAllRequests() {
         val requestsDatabase = Firebase.firestore
         val requestsDocQuery = requestsDatabase.collection("courseEnrollRequests")
+            .whereEqualTo("courseEnrollRequestStatus", "SENT")
         val allRequests = FirestoreRecyclerOptions.Builder<EnrollRequest>()
             .setQuery(requestsDocQuery, EnrollRequest::class.java).build()
 
@@ -88,6 +92,39 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
                             "Failed to delete request",
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
+            }
+
+            val acceptButton = requestViewHolder.itemView.findViewById<Button>(R.id.accept)
+            acceptButton.setOnClickListener() {
+                val studentsDatabase = Firebase.firestore
+                val studentDoc = studentsDatabase.collection("students").document(request.studentId)
+                var acceptedCourseList = listOf<String>()
+                acceptedCourseList += docId
+                val acceptedCourseMap = hashMapOf("acceptedCourses" to acceptedCourseList)
+                studentDoc.set(acceptedCourseMap, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "Request has been accepted",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "Failed to accept request",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                //also delete the request from the request collection
+                requestsDatabase.collection("courseEnrollRequests").document(docId)
+                    .delete()
+                    .addOnSuccessListener {
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d(ContentValues.TAG, "Error deleting request", exception)
                     }
             }
         }
