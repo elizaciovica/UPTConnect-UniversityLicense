@@ -88,7 +88,7 @@
                             android:id="@+id/text_enroll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="CTI-EN Requests"
+                            android:text="Section Requests"
                             android:textSize="30sp"
                             android:textStyle="bold"
                             android:layout_marginTop="20dp"
@@ -99,51 +99,14 @@
                             android:layout_marginHorizontal="40dp"/>
 
                     <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
+                            android:id="@+id/recyclerViewRequests"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:dividerHeight="4dp"
                             android:scrollbars="none"
                             app:reverseLayout="true"
                             app:stackFromEnd="true"
-                            android:visibility="invisible"
                             android:layout_marginTop="40dp"/>
-
-                    <RelativeLayout
-                            android:id="@+id/viewForNoConnections"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginHorizontal="15dp"
-                            android:visibility="invisible">
-                        <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="124dp"
-                                android:scaleType="centerCrop"
-                                app:srcCompat="@drawable/mandatory" />
-
-                        <TextView
-                                android:id="@+id/textId"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="20dp"
-                                android:layout_marginBottom="20dp"
-                                android:text="There are currently no requests"
-                                android:textAlignment="center"
-                                android:textAppearance="?attr/textAppearanceHeadline6"
-                                android:textColor="#570924"
-                                android:textFontWeight="600"
-                                android:textSize="20sp"
-                                android:textStyle="italic" />
-                    </RelativeLayout>
-
-                    <ProgressBar
-                            android:id="@+id/progressBar"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

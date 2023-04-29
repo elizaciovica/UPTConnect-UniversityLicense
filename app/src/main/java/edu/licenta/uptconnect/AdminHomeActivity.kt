@@ -24,7 +24,8 @@ class AdminHomeActivity : AppCompatActivity() {
 
     private fun initializeButtons() {
         binding.ctienCard.setOnClickListener() {
-            val intent = Intent(this, EnrollRequestsActivity::class.java)
+            val intent = Intent(this, AdminEnrollRequestsActivity::class.java)
+            intent.putExtra("sectionName", "CTI-ENG")
             startActivity(intent)
             finish()
         }

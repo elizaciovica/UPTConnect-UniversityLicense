@@ -9,8 +9,9 @@ data class CourseEnrollRequest(
     val examination: String,
     val teachingWay: Any,
     val studentId: String,
+    val studentName: String,
     val requestStatus: CourseEnrollRequestStatus
 ) {
-    constructor() : this("", "", "", "",false,"","","" +
+    constructor() : this("", "", "", "",false,"","","", "" +
             "",CourseEnrollRequestStatus.INITIAL)
 }

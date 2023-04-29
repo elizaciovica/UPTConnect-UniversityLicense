@@ -12,12 +12,14 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.adapter.EnrollCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityStudentCourseEnrollBinding
+import edu.licenta.uptconnect.model.Course
 import edu.licenta.uptconnect.model.CourseEnrollRequest
 import edu.licenta.uptconnect.model.CourseEnrollRequestStatus
 
 class StudentCourseEnrollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityStudentCourseEnrollBinding
+    private var coursesList = mutableListOf<CourseEnrollRequest>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +46,12 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
         val studentsDatabase = Firebase.firestore
         val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
-
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
+
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
+                    val acceptedCourses = documentSnapshot.get("acceptedCourses") as? List<String>
                     coursesRef.whereEqualTo("Section", documentSnapshot.getString("Section"))
                         .whereEqualTo("Year", documentSnapshot.getString("StudyYear"))
                         .whereEqualTo("Mandatory", false)
@@ -59,28 +62,32 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
                                 binding.recyclerViewEnroll.isVisible = false
                                 binding.viewForNoCoursesEnrolls.isVisible = true
                             } else {
-                                val coursesList = mutableListOf<CourseEnrollRequest>()
-                                for (document in documents) {
-                                    val courseId = document.id
-                                    val courseData = document.data
-                                    val name = courseData["Name"] as String
-                                    val section = courseData["Section"] as String
-                                    val year = courseData["Year"] as String
-                                    val mandatory = courseData["Mandatory"] as Boolean
-                                    val examination = courseData["Examination"] as String
-                                    val teachingWay = courseData["Teaching Way"]
-                                    val course = CourseEnrollRequest(
-                                        courseId,
-                                        name,
-                                        section,
-                                        year,
-                                        mandatory,
-                                        examination,
-                                        teachingWay!!,
-                                        studentFirebaseId,
-                                        CourseEnrollRequestStatus.INITIAL
-                                    )
-                                    coursesList.add(course)
+                                    for (document in documents) {
+                                        if (acceptedCourses != null && acceptedCourses.contains(document.id)){
+                                            Log.d(ContentValues.TAG, "Course already accepted")
+                                        } else {
+                                            val courseId = document.id
+                                            val courseData = document.data
+                                            val name = courseData["Name"] as String
+                                            val section = courseData["Section"] as String
+                                            val year = courseData["Year"] as String
+                                            val mandatory = courseData["Mandatory"] as Boolean
+                                            val examination = courseData["Examination"] as String
+                                            val teachingWay = courseData["Teaching Way"]
+                                            val course = CourseEnrollRequest(
+                                                courseId,
+                                                name,
+                                                section,
+                                                year,
+                                                mandatory,
+                                                examination,
+                                                teachingWay!!,
+                                                studentFirebaseId,
+                                                documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName"),
+                                                CourseEnrollRequestStatus.INITIAL
+                                            )
+                                            coursesList.add(course)
+                                        }
                                 }
                                 val adapter = EnrollCourseAdapter(coursesList)
                                 binding.recyclerViewEnroll.adapter = adapter
