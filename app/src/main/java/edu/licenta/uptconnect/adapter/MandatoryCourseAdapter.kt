@@ -13,6 +13,7 @@ class MandatoryCourseAdapter(
     private val dataSet: List<Course>
 ) :
     RecyclerView.Adapter<MandatoryCourseAdapter.ViewHolder>() {
+    var onItemClick : ((Course) -> Unit)? = null
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context: Context = itemView.context
         val courseName: TextView = itemView.findViewById(R.id.mandatory_course_name)
@@ -27,8 +28,10 @@ class MandatoryCourseAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
         viewHolder.courseName.text = dataSet[position].name
+        viewHolder.itemView.setOnClickListener() {
+            onItemClick?.invoke(dataSet[position])
+        }
     }
 
     override fun getItemCount(): Int {

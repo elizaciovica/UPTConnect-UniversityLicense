@@ -143,6 +143,12 @@ class GroupsActivity : DrawerLayoutActivity() {
                                 binding.recyclerView.adapter?.notifyDataSetChanged()
                                 binding.progressBar.isVisible = false
                                 binding.recyclerView.isVisible = true
+
+                                adapter.onItemClick = {
+                                    val intent = Intent(this, IndividualGroupActivity::class.java)
+                                    intent.putExtra("course", it)
+                                    startActivity(intent)
+                                }
                             }
                         }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
