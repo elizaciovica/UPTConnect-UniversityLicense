@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -101,22 +102,7 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
                 val studentDoc = studentsDatabase.collection("students").document(request.studentId)
                 var acceptedCourseList = listOf<String>()
                 acceptedCourseList += docId
-                val acceptedCourseMap = hashMapOf("acceptedCourses" to acceptedCourseList)
-                studentDoc.set(acceptedCourseMap, SetOptions.merge())
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            applicationContext,
-                            "Request has been accepted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            applicationContext,
-                            "Failed to accept request",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                studentDoc.update("acceptedCourses", FieldValue.arrayUnion(*acceptedCourseList.toTypedArray()))
 
                 //also delete the request from the request collection
                 requestsDatabase.collection("courseEnrollRequests").document(docId)

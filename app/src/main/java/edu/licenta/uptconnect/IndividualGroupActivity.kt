@@ -39,9 +39,17 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
     }
 
     private fun initializeButtons() {
+        val course = intent.getParcelableExtra<Course>("course")!!
         binding.chatCard.setOnClickListener() {
-            val course = intent.getParcelableExtra<Course>("course")!!
             val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("course", course)
+            intent.putExtra("email", email)
+            intent.putExtra("userId", studentFirebaseId)
+            startActivity(intent)
+        }
+
+        binding.pollsCard.setOnClickListener() {
+            val intent = Intent(this, PollActivity::class.java)
             intent.putExtra("course", course)
             intent.putExtra("email", email)
             intent.putExtra("userId", studentFirebaseId)
@@ -52,8 +60,6 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
     private fun getProfileDetails() {
         email = intent.getStringExtra("email").toString()
         studentFirebaseId = intent.getStringExtra("userId").toString()
-        println("HEREEE" + email)
-        println("@HEREE" + studentFirebaseId)
         val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
         storageRef.downloadUrl.addOnSuccessListener { uri ->
             val imageURL = uri.toString()
@@ -72,6 +78,5 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
-
     }
 }
