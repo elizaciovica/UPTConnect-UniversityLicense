@@ -49,7 +49,7 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
         }
 
         binding.pollsCard.setOnClickListener() {
-            val intent = Intent(this, PollsActivity::class.java)
+            val intent = Intent(this, PollActivity::class.java)
             intent.putExtra("course", course)
             intent.putExtra("email", email)
             intent.putExtra("userId", studentFirebaseId)
