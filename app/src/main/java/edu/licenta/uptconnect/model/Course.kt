@@ -23,6 +23,7 @@ data class Course(
         parcel.readString()!!,
         parcel.readValue(Any::class.java.classLoader)!!
     )
+
     override fun describeContents(): Int {
         return 0
     }

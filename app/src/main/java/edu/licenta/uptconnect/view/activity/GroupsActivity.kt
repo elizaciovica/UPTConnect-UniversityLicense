@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
 import android.content.Intent
@@ -12,12 +12,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import edu.licenta.uptconnect.adapter.EnrollCourseAdapter
-import edu.licenta.uptconnect.adapter.MandatoryCourseAdapter
+import edu.licenta.uptconnect.R
+import edu.licenta.uptconnect.view.adapter.MandatoryCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
 import edu.licenta.uptconnect.model.Course
-import edu.licenta.uptconnect.model.CourseEnrollRequest
-import edu.licenta.uptconnect.model.CourseEnrollRequestStatus
 
 class GroupsActivity : DrawerLayoutActivity() {
 
@@ -30,16 +28,16 @@ class GroupsActivity : DrawerLayoutActivity() {
         try {
             // your code here
 
-        super.onCreate(savedInstanceState)
-        setBinding()
-        initializeMenu(
-            binding.drawerLayout,
-            binding.navigationView,
-            0
-        )
-        getProfileDetails()
-        seeMandatoryCourses()
-        initializeButtons()
+            super.onCreate(savedInstanceState)
+            setBinding()
+            initializeMenu(
+                binding.drawerLayout,
+                binding.navigationView,
+                0
+            )
+            getProfileDetails()
+            seeMandatoryCourses()
+            initializeButtons()
         } catch (e: Exception) {
             Log.e("GroupsActivity", "Error in onCreate", e)
         }

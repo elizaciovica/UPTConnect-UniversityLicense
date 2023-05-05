@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
 import android.graphics.Typeface
@@ -15,6 +15,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityIndividualPollBinding
 import edu.licenta.uptconnect.model.Course
 import edu.licenta.uptconnect.model.Poll

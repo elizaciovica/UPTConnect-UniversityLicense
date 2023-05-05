@@ -15,98 +15,98 @@
             android:theme="@style/Theme.UPTConnect"
             tools:targetApi="31">
         <activity
-                android:name=".IndividualPollActivity"
+                android:name=".view.activity.IndividualPollActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".PollActivity"
+                android:name=".view.activity.PollActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".CreatePollActivity"
+                android:name=".view.activity.CreatePollActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".ChatActivity"
+                android:name=".view.activity.ChatActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".IndividualGroupActivity"
+                android:name=".view.activity.IndividualGroupActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".StudentCourseEnrollActivity"
+                android:name=".view.activity.StudentCourseEnrollActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".AdminEnrollRequestsActivity"
+                android:name=".view.activity.AdminEnrollRequestsActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".AdminHomeActivity"
+                android:name=".view.activity.AdminHomeActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".GroupsActivity"
+                android:name=".view.activity.GroupsActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".ProfileActivity"
+                android:name=".view.activity.ProfileActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".HomeActivity"
+                android:name=".view.activity.HomeActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".SignupActivity"
+                android:name=".view.activity.SignupActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".LoginActivity"
+                android:name=".view.activity.LoginActivity"
                 android:exported="false">
             <meta-data
                     android:name="android.app.lib_name"
                     android:value="" />
         </activity>
         <activity
-                android:name=".StartActivity"
+                android:name=".view.activity.StartActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

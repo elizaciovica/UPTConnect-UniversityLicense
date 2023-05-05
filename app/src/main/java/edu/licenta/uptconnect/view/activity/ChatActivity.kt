@@ -1,8 +1,6 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
-import edu.licenta.uptconnect.adapter.ChatAdapter
+import edu.licenta.uptconnect.view.adapter.ChatAdapter
 import edu.licenta.uptconnect.databinding.ActivityChatBinding
 import edu.licenta.uptconnect.model.Chat
 import edu.licenta.uptconnect.model.Course
@@ -29,7 +23,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     val currentStudentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
     var chatList = ArrayList<Chat>()
-    var receiver : String = ""
+    var receiver: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

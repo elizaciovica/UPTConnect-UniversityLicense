@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".IndividualPollActivity">
+        tools:context=".view.activity.IndividualPollActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -14,7 +14,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:headerLayout="@layout/header_navigation_drawer"
-            app:menu="@menu/nav_menu"/>
+            app:menu="@menu/nav_menu" />
 
     <ScrollView
             android:layout_width="match_parent"
@@ -23,11 +23,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".IndividualGroupActivity"
+                tools:context=".view.activity.IndividualGroupActivity"
                 android:background="#B8DCE4">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/profile_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -41,7 +40,7 @@
                     app:layout_constraintHorizontal_bias="0.076"
                     app:layout_constraintVertical_bias="0.506"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="20dp" />
 
             <TextView
                     android:id="@+id/username_id"
@@ -79,52 +78,52 @@
                     android:orientation="vertical"
                     android:background="@drawable/two_round_corners">
 
-                    <LinearLayout
-                            android:id="@+id/new_poll_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-                    </LinearLayout>
+                <LinearLayout
+                        android:id="@+id/new_poll_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"></LinearLayout>
 
-                    <RelativeLayout
-                            android:id="@+id/view_for_no_polls"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginHorizontal="15dp"
-                            android:visibility="invisible"
-                            android:layout_marginTop="100dp">
-                        <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="124dp"
-                                android:scaleType="centerCrop"
-                                app:srcCompat="@drawable/mandatory" />
+                <RelativeLayout
+                        android:id="@+id/view_for_no_polls"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:visibility="invisible"
+                        android:layout_marginTop="100dp">
 
-                        <TextView
-                                android:id="@+id/text_id"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="20dp"
-                                android:layout_marginBottom="20dp"
-                                android:text="You currently don't have any course assigned"
-                                android:textAlignment="center"
-                                android:textAppearance="?attr/textAppearanceHeadline6"
-                                android:textColor="#570924"
-                                android:textFontWeight="600"
-                                android:textSize="20sp"
-                                android:textStyle="italic" />
-                    </RelativeLayout>
-
-                    <ProgressBar
-                            android:id="@+id/progress_bar"
-                            style="?android:attr/progressBarStyle"
+                    <ImageView
                             android:layout_width="match_parent"
+                            android:layout_height="124dp"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/mandatory" />
+
+                    <TextView
+                            android:id="@+id/text_id"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="invisible"/>
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:text="You currently don't have any course assigned"
+                            android:textAlignment="center"
+                            android:textAppearance="?attr/textAppearanceHeadline6"
+                            android:textColor="#570924"
+                            android:textFontWeight="600"
+                            android:textSize="20sp"
+                            android:textStyle="italic" />
+                </RelativeLayout>
 
-                </LinearLayout>
+                <ProgressBar
+                        android:id="@+id/progress_bar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

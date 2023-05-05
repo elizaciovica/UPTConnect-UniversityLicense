@@ -7,5 +7,5 @@ data class EnrollRequest(
     val studentName: String,
     val courseName: String
 ) {
-    constructor(): this("", "","","","")
+    constructor() : this("", "", "", "", "")
 }

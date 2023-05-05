@@ -1,10 +1,10 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityAdminHomeBinding
 
 class AdminHomeActivity : DrawerLayoutActivity() {

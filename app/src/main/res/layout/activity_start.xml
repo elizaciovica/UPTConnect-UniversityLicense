@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
-        tools:context=".StartActivity"
+        tools:context=".view.activity.StartActivity"
         android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,8 +22,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/title_id"
                 android:layout_marginTop="50dp"
-                app:layout_constraintVertical_chainStyle="packed">
-        </ImageView>
+                app:layout_constraintVertical_chainStyle="packed"></ImageView>
 
         <TextView
                 android:id="@+id/title_id"
@@ -66,7 +65,7 @@
                 android:layout_marginTop="150dp"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:src="@drawable/sign3"/>
+                android:src="@drawable/sign3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

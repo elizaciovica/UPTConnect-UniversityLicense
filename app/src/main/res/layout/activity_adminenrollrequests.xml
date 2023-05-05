@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".GroupsActivity">
+        tools:context=".view.activity.GroupsActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -25,8 +25,7 @@
                 android:layout_height="match_parent"
                 android:background="#B8DCE4">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/profile_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -40,7 +39,7 @@
                     app:layout_constraintHorizontal_bias="0.076"
                     app:layout_constraintVertical_bias="0.506"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="20dp" />
 
             <TextView
                     android:id="@+id/username_id"
@@ -96,7 +95,7 @@
                             android:textColor="#570924"
                             android:background="@drawable/rounded_corners"
                             android:backgroundTint="#B8DCE4"
-                            android:layout_marginHorizontal="40dp"/>
+                            android:layout_marginHorizontal="40dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerViewRequests"
@@ -106,7 +105,7 @@
                             android:scrollbars="none"
                             app:reverseLayout="true"
                             app:stackFromEnd="true"
-                            android:layout_marginTop="40dp"/>
+                            android:layout_marginTop="40dp" />
 
                 </LinearLayout>
 
