@@ -1,6 +1,8 @@
 package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +10,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.SetOptions
@@ -225,7 +228,29 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     recreate()
                 }
             }
+        }
 
+        //make possible to delete the poll if the current user created it
+        if (poll.createdBy == studentFirebaseId) {
+            val buttonDelete = Button(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = 100 // set the margin top
+                    leftMargin = 200
+                    rightMargin = 200
+                }
+            }
+            val deleteText = "DELETE POLL"
+            buttonDelete.text = deleteText
+            buttonDelete.setTextColor(ContextCompat.getColor(this, R.color.white))
+            buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
+            linearLayout.addView(buttonDelete)
+
+            buttonDelete.setOnClickListener {
+                showConfirmationDialog()
+            }
         }
     }
 
@@ -344,5 +369,55 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     linearLayout.addView(textViewAnswer)
                 }
             }
+    }
+
+    private fun seePolls() {
+        val intent = Intent(this, PollActivity::class.java)
+        intent.putExtra("course", course)
+        intent.putExtra("email", email)
+        intent.putExtra("userId", studentFirebaseId)
+        intent.putExtra("imageUrl", imageUrl)
+        intent.putExtra("studentName", studentName)
+        startActivity(intent)
+    }
+
+    private fun showConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.confirmation_dialog, null)
+
+        builder.setView(view)
+        val dialog = builder.create()
+
+        view.findViewById<Button>(R.id.delete_btn).setOnClickListener {
+            Firebase.firestore.collection("polls")
+                .document("courses_polls_votes")
+                .collection(course.id + poll.pollId)
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        document.reference.delete()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error deleting documents: ", exception)
+                }
+
+            Firebase.firestore.collection("polls")
+                .document("courses_polls")
+                .collection(course.id).document(poll.pollId).delete()
+            Toast.makeText(
+                this,
+                "Poll deleted successfully",
+                Toast.LENGTH_SHORT
+            ).show()
+            seePolls()
+            dialog.dismiss()
+        }
+
+        view.findViewById<Button>(R.id.cancel_btn).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
