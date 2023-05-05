@@ -10,31 +10,35 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
-import edu.licenta.uptconnect.view.adapter.PollAdapter
 import edu.licenta.uptconnect.databinding.ActivityPollBinding
 import edu.licenta.uptconnect.model.Course
 import edu.licenta.uptconnect.model.Poll
+import edu.licenta.uptconnect.view.adapter.PollAdapter
 
 class PollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityPollBinding
-    private var studentFirebaseId = ""
-    private var email = ""
+
     private lateinit var course: Course
     private var pollList = mutableListOf<Poll>()
+
+    private var studentFirebaseId = ""
+    private var email = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             0
         )
-        getProfileDetails()
         initializeButtons()
         seeAvailablePolls()
     }
@@ -43,6 +47,18 @@ class PollActivity : DrawerLayoutActivity() {
         binding = ActivityPollBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+    }
+
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
     }
 
     private fun seeAvailablePolls() {
@@ -80,6 +96,8 @@ class PollActivity : DrawerLayoutActivity() {
                         intent.putExtra("email", email)
                         intent.putExtra("poll", it)
                         intent.putExtra("course", course)
+                        intent.putExtra("imageUrl", imageUrl)
+                        intent.putExtra("studentName", studentName)
                         startActivity(intent)
                     }
                 }
@@ -97,30 +115,9 @@ class PollActivity : DrawerLayoutActivity() {
             intent.putExtra("course", course)
             intent.putExtra("email", email)
             intent.putExtra("userId", studentFirebaseId)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
-    }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
-            }
     }
 }

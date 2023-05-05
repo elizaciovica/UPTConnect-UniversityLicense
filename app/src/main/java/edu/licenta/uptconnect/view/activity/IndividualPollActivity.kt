@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityIndividualPollBinding
@@ -25,21 +24,26 @@ import java.util.*
 class IndividualPollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityIndividualPollBinding
-    private var studentFirebaseId = ""
-    private var email = ""
+
     private lateinit var course: Course
     private lateinit var poll: Poll
     private var button: Button? = null
 
+    private var studentFirebaseId = ""
+    private var email = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             0
         )
-        getProfileDetails()
         seePoll()
     }
 
@@ -49,9 +53,21 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
+    }
+
     private fun seePoll() {
-        course = intent.getParcelableExtra<Course>("course")!!
-        poll = intent.getParcelableExtra<Poll>("poll")!!
+        course = intent.getParcelableExtra("course")!!
+        poll = intent.getParcelableExtra("poll")!!
         val question = poll.question
         val options = poll.options
 
@@ -82,7 +98,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        options?.forEach { option ->
+        options.forEach { option ->
             val radioButton = RadioButton(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -103,7 +119,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         //verify if the endDate has passed
         checkPollEndDate(questionTextView, radioGroup, poll, linearLayout)
 
-        //if the user already voted then disable the radiogroup
+        //if the user already voted then disable the radio group
         Firebase.firestore.collection("polls").document("courses_polls_votes")
             .collection(course.id + poll.pollId)
             .whereEqualTo("votedBy", studentFirebaseId)
@@ -135,7 +151,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             gravity = Gravity.CENTER
                         }
-                        textViewChoice.text = "Your choice: " + document.data["answer"]
+                        val textViewChoiceText = "Your choice: ${document.data["answer"]}"
+                        textViewChoice.text = textViewChoiceText
                         textViewChoice.setTextColor(ContextCompat.getColor(this, R.color.grey))
                         linearLayout.addView(textViewChoice)
                     }
@@ -175,7 +192,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
                 val selectedOption = radioButton.text.toString()
                 linearLayout.addView(button)
-                button?.text = "VOTE"
+                val voteText = "VOTE"
+                button?.text = voteText
                 button?.setOnClickListener {
                     // perform actions based on the selected option
                     val pollCollectionRef =
@@ -268,7 +286,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 30f)
                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
-            textViewInfo.text = "POLL CLOSED"
+            val textViewInfoText = "POLL CLOSED"
+            textViewInfo.text = textViewInfoText
             textViewInfo.setTextColor(ContextCompat.getColor(this, R.color.red))
             linearLayoutText.addView(textViewInfo)
 
@@ -285,7 +304,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
-            textViewStatement.text = "Results for: " + textView.text + " poll"
+            val textToDisplay = "Results for: ${textView.text} poll"
+            textViewStatement.text = textToDisplay
             textViewStatement.setTextColor(ContextCompat.getColor(this, R.color.white))
             linearLayoutText.addView(textViewStatement)
             calculatePollResults(poll, linearLayoutText)
@@ -296,7 +316,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
     //maybe when voting we create a collection
     private fun calculatePollResults(poll: Poll, linearLayout: LinearLayout) {
         val pollVotesDatabase = Firebase.firestore
-        var list = listOf<String>()
+        val list = mutableListOf<String>()
 
         pollVotesDatabase.collection("polls").document("courses_polls_votes")
             .collection(course.id + poll.pollId)
@@ -318,33 +338,11 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                         }
                         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
                     }
-                    textViewAnswer.text = "$value $count"
+                    val textViewAnswerText = "$value $count"
+                    textViewAnswer.text = textViewAnswerText
                     textViewAnswer.setTextColor(ContextCompat.getColor(this, R.color.teal_700))
                     linearLayout.addView(textViewAnswer)
                 }
-            }
-    }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
     }
 }

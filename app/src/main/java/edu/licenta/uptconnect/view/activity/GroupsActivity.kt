@@ -10,37 +10,35 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
-import edu.licenta.uptconnect.view.adapter.MandatoryCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityGroupsBinding
 import edu.licenta.uptconnect.model.Course
+import edu.licenta.uptconnect.view.adapter.MandatoryCourseAdapter
 
 class GroupsActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityGroupsBinding
+
     private var coursesList = mutableListOf<Course>()
-    private var studentFirebaseId = ""
-    private var email = ""
+
+    private var studentFirebaseId: String = ""
+    private var email: String = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        try {
-            // your code here
-
-            super.onCreate(savedInstanceState)
-            setBinding()
-            initializeMenu(
-                binding.drawerLayout,
-                binding.navigationView,
-                0
-            )
-            getProfileDetails()
-            seeMandatoryCourses()
-            initializeButtons()
-        } catch (e: Exception) {
-            Log.e("GroupsActivity", "Error in onCreate", e)
-        }
+        super.onCreate(savedInstanceState)
+        setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
+        initializeMenu(
+            binding.drawerLayout,
+            binding.navigationView,
+            0
+        )
+        seeMandatoryCourses()
+        initializeButtons()
     }
 
     private fun setBinding() {
@@ -49,13 +47,25 @@ class GroupsActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
+    }
+
     private fun initializeButtons() {
-        binding.enrollButton.setOnClickListener() {
-            val email: String = intent.getStringExtra("email").toString()
-            val firebaseUser: String = intent.getStringExtra("userId").toString()
+        binding.enrollButton.setOnClickListener {
             val intent = Intent(this, StudentCourseEnrollActivity::class.java)
-            intent.putExtra("userId", firebaseUser)
+            intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
     }
@@ -66,7 +76,7 @@ class GroupsActivity : DrawerLayoutActivity() {
 
         val studentsDatabase = Firebase.firestore
         val coursesRef = studentsDatabase.collection("courses")
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
+        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId)
 
         //for the accepted courses
         studentDoc.get()
@@ -156,38 +166,14 @@ class GroupsActivity : DrawerLayoutActivity() {
                                     intent.putExtra("userId", studentFirebaseId)
                                     intent.putExtra("email", email)
                                     intent.putExtra("course", it)
+                                    intent.putExtra("imageUrl", imageUrl)
+                                    intent.putExtra("studentName", studentName)
                                     startActivity(intent)
                                 }
                             }
                         }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
                         }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
-            }
-    }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
-        // ex .get() - documentSnapshot is like a response body
-        //binding the dynamic linking for the xml component and the content
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
                 }
             }
             .addOnFailureListener { exception ->
