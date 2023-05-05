@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".PollActivity">
+        tools:context=".view.activity.PollActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -24,7 +24,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".PollActivity">
+                tools:context=".view.activity.PollActivity">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/profile_image"
@@ -155,7 +155,7 @@
                         android:layout_gravity="center"
                         android:layout_marginHorizontal="70dp"
                         android:layout_marginTop="40dp"
-                        android:layout_marginBottom="400dp"/>
+                        android:layout_marginBottom="400dp" />
 
             </LinearLayout>
 

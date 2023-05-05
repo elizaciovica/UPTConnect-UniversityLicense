@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import edu.licenta.uptconnect.R
 
 open class DrawerLayoutActivity : AppCompatActivity() {
 

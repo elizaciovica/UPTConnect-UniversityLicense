@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".IndividualGroupActivity">
+        tools:context=".view.activity.IndividualGroupActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -14,7 +14,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:headerLayout="@layout/header_navigation_drawer"
-            app:menu="@menu/nav_menu"/>
+            app:menu="@menu/nav_menu" />
 
     <ScrollView
             android:layout_width="match_parent"
@@ -23,11 +23,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".IndividualGroupActivity"
+                tools:context=".view.activity.IndividualGroupActivity"
                 android:background="#B8DCE4">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/profile_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -41,7 +40,7 @@
                     app:layout_constraintHorizontal_bias="0.076"
                     app:layout_constraintVertical_bias="0.506"
                     android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="20dp" />
 
             <TextView
                     android:id="@+id/username_id"

@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect.adapter
+package edu.licenta.uptconnect.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import edu.licenta.uptconnect.ChatActivity
+import edu.licenta.uptconnect.view.activity.ChatActivity
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.model.Chat
 
-class ChatAdapter(private val context: Context, private val chatList: ArrayList<Chat>)
-    : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private val context: Context, private val chatList: ArrayList<Chat>) :
+    RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     private val MESSAGE_TYPE_LEFT = 0
     private val MESSAGE_TYPE_RIGHT = 1
 
@@ -43,8 +43,9 @@ class ChatAdapter(private val context: Context, private val chatList: ArrayList<
             .whereEqualTo("Uid", chat.sender)
             .get()
             .addOnSuccessListener { documents ->
-                for(document in documents) {
-                    holder.txtStudentSenderName.text = document.data["FirstName"].toString() + " " + document.data["LastName"].toString()
+                for (document in documents) {
+                    holder.txtStudentSenderName.text =
+                        document.data["FirstName"].toString() + " " + document.data["LastName"].toString()
                 }
             }
     }
@@ -56,7 +57,7 @@ class ChatAdapter(private val context: Context, private val chatList: ArrayList<
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(chatList[position].sender == ChatActivity().currentStudentFirebaseId) {
+        return if (chatList[position].sender == ChatActivity().currentStudentFirebaseId) {
             MESSAGE_TYPE_RIGHT
         } else {
             MESSAGE_TYPE_LEFT

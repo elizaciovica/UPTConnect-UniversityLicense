@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect.adapter
+package edu.licenta.uptconnect.view.adapter
 
 import android.content.ContentValues
 import android.util.Log
@@ -39,7 +39,12 @@ class EnrollCourseAdapter(
         viewHolder.enrollButton.setOnClickListener() {
             //send request to admin
             changeButtons(position, viewHolder)
-            createCourseEnrollRequest(dataSet[position].id, dataSet[position].studentId, dataSet[position].studentName, dataSet[position].name)
+            createCourseEnrollRequest(
+                dataSet[position].id,
+                dataSet[position].studentId,
+                dataSet[position].studentName,
+                dataSet[position].name
+            )
         }
 
         viewHolder.cancelButton.setOnClickListener() {
@@ -68,7 +73,12 @@ class EnrollCourseAdapter(
         }
     }
 
-    private fun createCourseEnrollRequest(courseId: String, studentId: String, studentName: String, courseName: String) {
+    private fun createCourseEnrollRequest(
+        courseId: String,
+        studentId: String,
+        studentName: String,
+        courseName: String
+    ) {
         val courseEnrollRequestsDatabase = Firebase.firestore
         val courseEnrollRequest = hashMapOf(
             "courseId" to courseId,

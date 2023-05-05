@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
 import android.content.Intent
@@ -9,13 +9,12 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityCreatePollBinding
 import edu.licenta.uptconnect.model.Course
 import java.text.SimpleDateFormat
@@ -103,7 +102,7 @@ class CreatePollActivity : DrawerLayoutActivity() {
         binding.createPoll.setOnClickListener {
             val pollQuestion = binding.createTitleOfPoll.text.toString()
 
-            if(pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty()) {
+            if (pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty()) {
                 Toast.makeText(
                     this, "The poll must have a question, options and duration", Toast.LENGTH_SHORT
                 ).show()
@@ -112,7 +111,13 @@ class CreatePollActivity : DrawerLayoutActivity() {
                     "question" to pollQuestion,
                     "options" to optionsList,
                     "start_time" to dateFormat.format(Date(currentTime)),
-                    "end_time" to dateFormat.format(Date(currentTime + TimeUnit.DAYS.toMillis(chosenDuration.toLong()))),// 24 hours from now
+                    "end_time" to dateFormat.format(
+                        Date(
+                            currentTime + TimeUnit.DAYS.toMillis(
+                                chosenDuration.toLong()
+                            )
+                        )
+                    ),// 24 hours from now
                     "createdBy" to studentFirebaseId
                 )
                 pollCollectionRef.document()

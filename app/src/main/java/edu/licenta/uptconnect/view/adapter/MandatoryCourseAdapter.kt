@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect.adapter
+package edu.licenta.uptconnect.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,7 +13,8 @@ class MandatoryCourseAdapter(
     private val dataSet: List<Course>
 ) :
     RecyclerView.Adapter<MandatoryCourseAdapter.ViewHolder>() {
-    var onItemClick : ((Course) -> Unit)? = null
+    var onItemClick: ((Course) -> Unit)? = null
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context: Context = itemView.context
         val courseName: TextView = itemView.findViewById(R.id.mandatory_course_name)

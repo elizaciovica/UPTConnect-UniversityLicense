@@ -1,25 +1,22 @@
-package edu.licenta.uptconnect
+package edu.licenta.uptconnect.view.activity
 
 import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityAdminenrollrequestsBinding
 import edu.licenta.uptconnect.model.EnrollRequest
 
@@ -121,7 +118,10 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
                 val studentDoc = studentsDatabase.collection("students").document(request.studentId)
                 var acceptedCourseList = listOf<String>()
                 acceptedCourseList += docId
-                studentDoc.update("acceptedCourses", FieldValue.arrayUnion(*acceptedCourseList.toTypedArray()))
+                studentDoc.update(
+                    "acceptedCourses",
+                    FieldValue.arrayUnion(*acceptedCourseList.toTypedArray())
+                )
 
                 //also delete the request from the request collection
                 requestsDatabase.collection("courseEnrollRequests").document(docId)

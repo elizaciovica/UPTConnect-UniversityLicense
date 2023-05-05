@@ -1,4 +1,4 @@
-package edu.licenta.uptconnect.adapter
+package edu.licenta.uptconnect.view.adapter
 
 import android.content.ContentValues
 import android.content.Context
