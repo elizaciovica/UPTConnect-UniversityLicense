@@ -9,27 +9,32 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:orientation="vertical"
-            android:background="#B8DCE4">
+            android:background="#E8DADA">
 
         <TextView
                 android:id="@+id/private_chat"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:text="PRIVATE CHAT"
-                android:textStyle="bold"
                 android:textSize="30sp"
+                android:textColor="#647292"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="10dp"/>
 
         <TextView
                 android:id="@+id/chat_name"
-                android:layout_width="200dp"
-                android:layout_height="40dp"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
                 android:text="Chat name"
+                android:textColor="#647292"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
                 android:textSize="20sp"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"/>
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"/>
 
     </LinearLayout>
 
@@ -38,14 +43,14 @@
             android:layout_below="@id/l1"
             android:layout_width="match_parent"
             android:layout_height="800dp"
-            android:background="@drawable/two_round_corners"/>
+            android:background="@drawable/chat_background"/>
 
     <RelativeLayout
             android:id="@+id/r1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignBottom="@+id/chatRecyclerView"
-            android:background="#E5F4FB">
+            android:background="#D8EAE7">
 
         <LinearLayout
                 android:layout_width="match_parent"

@@ -75,8 +75,6 @@ class PollActivity : DrawerLayoutActivity() {
 
                     adapter.onItemClick = {
                         val intent = Intent(this, IndividualPollActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         intent.putExtra("userId", studentFirebaseId)
                         intent.putExtra("email", email)
                         intent.putExtra("poll", it)
@@ -98,7 +96,6 @@ class PollActivity : DrawerLayoutActivity() {
             intent.putExtra("course", course)
             intent.putExtra("email", email)
             intent.putExtra("userId", studentFirebaseId)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
     }
