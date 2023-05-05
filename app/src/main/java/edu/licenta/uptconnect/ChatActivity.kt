@@ -41,6 +41,8 @@ class ChatActivity : AppCompatActivity() {
         val course = intent.getParcelableExtra<Course>("course")!!
         receiver = course.id
         readMessage(currentStudentFirebaseId!!, receiver)
+
+        binding.chatName.text = course.name
     }
 
     private fun setBinding() {

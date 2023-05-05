@@ -39,7 +39,6 @@ class HomeActivity : DrawerLayoutActivity() {
     private fun initializeButtons() {
         binding.groupsCard.setOnClickListener() {
             val intent = Intent(this, GroupsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
             startActivity(intent)

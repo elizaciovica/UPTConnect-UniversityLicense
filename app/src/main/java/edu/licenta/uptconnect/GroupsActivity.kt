@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,9 @@ class GroupsActivity : DrawerLayoutActivity() {
     private var email = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        try {
+            // your code here
+
         super.onCreate(savedInstanceState)
         setBinding()
         initializeMenu(
@@ -36,6 +40,9 @@ class GroupsActivity : DrawerLayoutActivity() {
         getProfileDetails()
         seeMandatoryCourses()
         initializeButtons()
+        } catch (e: Exception) {
+            Log.e("GroupsActivity", "Error in onCreate", e)
+        }
     }
 
     private fun setBinding() {
@@ -60,7 +67,6 @@ class GroupsActivity : DrawerLayoutActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
 
@@ -73,8 +79,8 @@ class GroupsActivity : DrawerLayoutActivity() {
                         .get()
                         .addOnSuccessListener { documents ->
                             if (documents.isEmpty) {
-                                binding.progressBar.isVisible = false
-                                binding.recyclerView.isVisible = false
+                                binding.progressBar.visibility = View.GONE
+                                binding.recyclerView.visibility = View.GONE
                                 binding.viewForNoCourses.isVisible = true
                             } else {
                                 for (document in documents) {
@@ -116,8 +122,8 @@ class GroupsActivity : DrawerLayoutActivity() {
                         .get()
                         .addOnSuccessListener { documents ->
                             if (documents.isEmpty) {
-                                binding.progressBar.isVisible = false
-                                binding.recyclerView.isVisible = false
+                                binding.progressBar.visibility = View.GONE
+                                binding.recyclerView.visibility = View.GONE
                                 binding.viewForNoCourses.isVisible = true
                             } else {
                                 for (document in documents) {
@@ -143,12 +149,12 @@ class GroupsActivity : DrawerLayoutActivity() {
                                 val adapter = MandatoryCourseAdapter(coursesList)
                                 binding.recyclerView.adapter = adapter
                                 binding.recyclerView.adapter?.notifyDataSetChanged()
-                                binding.progressBar.isVisible = false
+                                binding.progressBar.visibility = View.GONE
+                                binding.viewForNoCourses.visibility = View.GONE
                                 binding.recyclerView.isVisible = true
 
                                 adapter.onItemClick = {
                                     val intent = Intent(this, IndividualGroupActivity::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                     intent.putExtra("userId", studentFirebaseId)
                                     intent.putExtra("email", email)
                                     intent.putExtra("course", it)

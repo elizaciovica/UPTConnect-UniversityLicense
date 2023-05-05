@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -21,7 +23,7 @@ import com.google.firebase.ktx.Firebase
 import edu.licenta.uptconnect.databinding.ActivityAdminenrollrequestsBinding
 import edu.licenta.uptconnect.model.EnrollRequest
 
-class AdminEnrollRequestsActivity : AppCompatActivity() {
+class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityAdminenrollrequestsBinding
     private lateinit var requestsAdapter: FirestoreRecyclerAdapter<EnrollRequest, AdminEnrollRequestsViewHolder>
@@ -30,6 +32,23 @@ class AdminEnrollRequestsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+
+        val navigationView = binding.navigationView
+        val drawerLayout = binding.drawerLayout
+
+        initializeMenu(
+            drawerLayout,
+            navigationView,
+            0
+        )
+        navigationView.menu.findItem(R.id.home).isVisible = false
+        navigationView.menu.findItem(R.id.edit_profile).isVisible = false
+        navigationView.menu.findItem(R.id.my_colleagues).isVisible = false
+        navigationView.menu.findItem(R.id.my_courses).isVisible = false
+
+        val headerView = navigationView.getHeaderView(0)
+        headerView.findViewById<TextView>(R.id.header_text).text = "ADMIN"
+
         seeAllRequests()
     }
 

@@ -23,7 +23,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class CreatePollActivity : AppCompatActivity() {
+class CreatePollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityCreatePollBinding
     private val db = Firebase.firestore
@@ -34,6 +34,11 @@ class CreatePollActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        initializeMenu(
+            binding.drawerLayout,
+            binding.navigationView,
+            0
+        )
         getProfileDetails()
         setPollDurationDropDown()
         createPoll()
@@ -138,7 +143,6 @@ class CreatePollActivity : AppCompatActivity() {
         intent.putExtra("course", course)
         intent.putExtra("email", email)
         intent.putExtra("userId", studentFirebaseId)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
