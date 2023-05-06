@@ -112,72 +112,29 @@ class GroupsActivity : DrawerLayoutActivity() {
                                         )
                                         coursesList.add(course)
                                     }
+                                    val adapter = MandatoryCourseAdapter(coursesList)
+                                    binding.recyclerView.adapter = adapter
+                                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                                    binding.progressBar.visibility = View.GONE
+                                    binding.viewForNoCourses.visibility = View.GONE
+                                    binding.recyclerView.isVisible = true
+
+                                    adapter.onItemClick = {
+                                        val intent =
+                                            Intent(this, IndividualGroupActivity::class.java)
+                                        intent.putExtra("userId", studentFirebaseId)
+                                        intent.putExtra("email", email)
+                                        intent.putExtra("course", it)
+                                        intent.putExtra("imageUrl", imageUrl)
+                                        intent.putExtra("studentName", studentName)
+                                        startActivity(intent)
+                                    }
                                 }
                             }
                         }.addOnFailureListener { exception ->
                             Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
                         }
                 }
-            }
-
-        //for the mandatory courses
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    coursesRef.whereEqualTo("Section", documentSnapshot.getString("Section"))
-                        .whereEqualTo("Year", documentSnapshot.getString("StudyYear"))
-                        .whereEqualTo("Mandatory", true)
-                        .get()
-                        .addOnSuccessListener { documents ->
-                            if (documents.isEmpty) {
-                                binding.progressBar.visibility = View.GONE
-                                binding.recyclerView.visibility = View.GONE
-                                binding.viewForNoCourses.isVisible = true
-                            } else {
-                                for (document in documents) {
-                                    val courseId = document.id
-                                    val courseData = document.data
-                                    val name = courseData["Name"] as String
-                                    val section = courseData["Section"] as String
-                                    val year = courseData["Year"] as String
-                                    val mandatory = courseData["Mandatory"] as Boolean
-                                    val examination = courseData["Examination"] as String
-                                    val teachingWay = courseData["Teaching Way"]
-                                    val course = Course(
-                                        courseId,
-                                        name,
-                                        section,
-                                        year,
-                                        mandatory,
-                                        examination,
-                                        teachingWay!!
-                                    )
-                                    coursesList.add(course)
-                                }
-                                val adapter = MandatoryCourseAdapter(coursesList)
-                                binding.recyclerView.adapter = adapter
-                                binding.recyclerView.adapter?.notifyDataSetChanged()
-                                binding.progressBar.visibility = View.GONE
-                                binding.viewForNoCourses.visibility = View.GONE
-                                binding.recyclerView.isVisible = true
-
-                                adapter.onItemClick = {
-                                    val intent = Intent(this, IndividualGroupActivity::class.java)
-                                    intent.putExtra("userId", studentFirebaseId)
-                                    intent.putExtra("email", email)
-                                    intent.putExtra("course", it)
-                                    intent.putExtra("imageUrl", imageUrl)
-                                    intent.putExtra("studentName", studentName)
-                                    startActivity(intent)
-                                }
-                            }
-                        }.addOnFailureListener { exception ->
-                            Log.d(ContentValues.TAG, "Error retrieving courses. ", exception)
-                        }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
     }
 }
