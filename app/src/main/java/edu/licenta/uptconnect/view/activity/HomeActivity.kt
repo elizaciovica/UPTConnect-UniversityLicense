@@ -1,10 +1,9 @@
 package edu.licenta.uptconnect.view.activity
 
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -13,21 +12,57 @@ import edu.licenta.uptconnect.databinding.ActivityHomeBinding
 
 class HomeActivity : DrawerLayoutActivity() {
 
-    private val screenId: Int = 1
     private lateinit var binding: ActivityHomeBinding
-    private var studentFirebaseId = ""
-    private var email = ""
+
+    private val screenId: Int = 1
+
+    private var studentFirebaseId: String = ""
+    private var email: String = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        getProfileDetails()
+
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             screenId
         )
-        getProfileDetails()
         initializeButtons()
+    }
+
+    private fun getProfileDetails() {
+        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
+        storageRef.downloadUrl.addOnSuccessListener { uri ->
+            imageUrl = uri.toString()
+            Picasso.get().load(imageUrl).into(binding.profileImage)
+        }
+
+        val studentsDatabase = Firebase.firestore
+        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId)
+        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
+        // ex .get() - documentSnapshot is like a response body
+        //binding the dynamic linking for the xml component and the content
+        studentDoc.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    studentName =
+                        "${documentSnapshot.get("FirstName")} ${documentSnapshot.get("LastName")}"
+                    binding.usernameId.text = studentName
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
+            }
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
     }
 
     private fun setBinding() {
@@ -37,41 +72,13 @@ class HomeActivity : DrawerLayoutActivity() {
     }
 
     private fun initializeButtons() {
-        binding.groupsCard.setOnClickListener() {
+        binding.groupsCard.setOnClickListener {
             val intent = Intent(this, GroupsActivity::class.java)
             intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
     }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        println("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
-        // ex .get() - documentSnapshot is like a response body
-        //binding the dynamic linking for the xml component and the content
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error retrieving Student Name. ", exception)
-            }
-
-    }
-
 }

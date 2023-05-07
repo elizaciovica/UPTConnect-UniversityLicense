@@ -1,12 +1,7 @@
 package edu.licenta.uptconnect.view.activity
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.databinding.ActivityIndividualGroupBinding
 import edu.licenta.uptconnect.model.Course
@@ -14,18 +9,22 @@ import edu.licenta.uptconnect.model.Course
 class IndividualGroupActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityIndividualGroupBinding
+
     private var studentFirebaseId = ""
     private var email = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             0
         )
-        getProfileDetails()
         initializeButtons()
     }
 
@@ -35,9 +34,21 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
+    }
+
     private fun initializeButtons() {
         val course = intent.getParcelableExtra<Course>("course")!!
-        binding.chatCard.setOnClickListener() {
+        binding.chatCard.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("course", course)
             intent.putExtra("email", email)
@@ -45,35 +56,14 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
             startActivity(intent)
         }
 
-        binding.pollsCard.setOnClickListener() {
+        binding.pollsCard.setOnClickListener {
             val intent = Intent(this, PollActivity::class.java)
             intent.putExtra("course", course)
             intent.putExtra("email", email)
             intent.putExtra("userId", studentFirebaseId)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
-    }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
-            }
     }
 }

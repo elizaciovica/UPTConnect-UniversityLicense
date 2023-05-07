@@ -1,10 +1,8 @@
 package edu.licenta.uptconnect.view.activity
 
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.*
@@ -12,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityCreatePollBinding
@@ -25,20 +22,28 @@ import java.util.concurrent.TimeUnit
 class CreatePollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityCreatePollBinding
+
     private val db = Firebase.firestore
+
+    private var chosenDuration: String = ""
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private val currentTime = System.currentTimeMillis()
+
     private var studentFirebaseId = ""
     private var email = ""
-    private var chosenDuration: String = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             0
         )
-        getProfileDetails()
         setPollDurationDropDown()
         createPoll()
     }
@@ -49,11 +54,20 @@ class CreatePollActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val currentTime = System.currentTimeMillis()
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
+    }
 
     private fun createPoll() {
-        var optionsList = mutableListOf<String>()
+        val optionsList = mutableListOf<String>()
         val course = intent.getParcelableExtra<Course>("course")!!
         val pollCollectionRef =
             db.collection("polls").document("courses_polls").collection(course.id)
@@ -83,7 +97,7 @@ class CreatePollActivity : DrawerLayoutActivity() {
             AlertDialog.Builder(this)
                 .setTitle("New option")
                 .setView(newEditText)
-                .setPositiveButton("Add") { dialog, which ->
+                .setPositiveButton("Add") { dialog, _ ->
                     val newOption = newEditText.text.toString()
                     if (newOption.isNotEmpty()) {
                         optionsList += newOption
@@ -92,7 +106,7 @@ class CreatePollActivity : DrawerLayoutActivity() {
                     }
                     dialog.dismiss()
                 }
-                .setNegativeButton("Cancel") { dialog, which ->
+                .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .create()
@@ -148,6 +162,8 @@ class CreatePollActivity : DrawerLayoutActivity() {
         intent.putExtra("course", course)
         intent.putExtra("email", email)
         intent.putExtra("userId", studentFirebaseId)
+        intent.putExtra("imageUrl", imageUrl)
+        intent.putExtra("studentName", studentName)
         startActivity(intent)
     }
 
@@ -157,35 +173,9 @@ class CreatePollActivity : DrawerLayoutActivity() {
         val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
-            AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val itemSelected = adapterView.getItemAtPosition(i)
                 chosenDuration = itemSelected.toString()
-            }
-    }
-
-    private fun getProfileDetails() {
-        email = intent.getStringExtra("email").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        studentFirebaseId = intent.getStringExtra("userId").toString()
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
-        // ex .get() - documentSnapshot is like a response body
-        //binding the dynamic linking for the xml component and the content
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
     }
 }

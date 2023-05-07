@@ -1,6 +1,5 @@
 package edu.licenta.uptconnect.view.activity
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +9,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -20,6 +20,7 @@ import edu.licenta.uptconnect.databinding.ActivityProfileBinding
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
+
     private var imageUri: Uri? = null
     private var chosenFaculty: String = ""
     private var chosenSection: String = ""
@@ -46,7 +47,7 @@ class ProfileActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
-            AdapterView.OnItemClickListener { adapterView, view, i, l ->
+            AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val itemSelected = adapterView.getItemAtPosition(i)
                 chosenFaculty = itemSelected.toString()
                 binding.autoCompleteSection.setAdapter(
@@ -77,7 +78,7 @@ class ProfileActivity : AppCompatActivity() {
             val adapter2 = ArrayAdapter(this, R.layout.facultieslist_item, sectionListsForAC)
             autoComplete2.setAdapter(adapter2)
             autoComplete2.onItemClickListener =
-                AdapterView.OnItemClickListener { adapterView, view, i, l ->
+                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                     val itemSelected2 = adapterView.getItemAtPosition(i)
                     chosenSection = itemSelected2.toString()
                     binding.autoCompleteYear.setAdapter(
@@ -102,7 +103,7 @@ class ProfileActivity : AppCompatActivity() {
                 ArrayAdapter(this, R.layout.facultieslist_item, sectionListForInformatics)
             autoComplete3.setAdapter(adapter3)
             autoComplete3.onItemClickListener =
-                AdapterView.OnItemClickListener { adapterView, view, i, l ->
+                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                     val itemSelected3 = adapterView.getItemAtPosition(i)
                     chosenYear = itemSelected3.toString()
                 }
@@ -111,7 +112,7 @@ class ProfileActivity : AppCompatActivity() {
             val adapter3 = ArrayAdapter(this, R.layout.facultieslist_item, sectionList)
             autoComplete3.setAdapter(adapter3)
             autoComplete3.onItemClickListener =
-                AdapterView.OnItemClickListener { adapterView, view, i, l ->
+                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                     val itemSelected3 = adapterView.getItemAtPosition(i)
                     chosenYear = itemSelected3.toString()
                 }
@@ -144,11 +145,11 @@ class ProfileActivity : AppCompatActivity() {
         val email: String = intent.getStringExtra("email").toString()
         val firebaseUser = intent.getStringExtra("userId").toString()
 
-        binding.uploadProfilePicture.setOnClickListener() {
+        binding.uploadProfilePicture.setOnClickListener {
             selectImage()
         }
-        binding.setProfile.setOnClickListener() {
-            var validDetails = verifyInputDetails()
+        binding.setProfile.setOnClickListener {
+            val validDetails = verifyInputDetails()
             if (chosenFaculty.isEmpty() || chosenSection.isEmpty()
                 || chosenYear.isEmpty() || imageUri == null || !validDetails
             ) {
@@ -158,52 +159,52 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                uploadProfileImage()
-                val studentsDatabase = Firebase.firestore
-                studentsDatabase.collection("students").document(studentUid)
-                    .update(
-                        "FirstName", binding.firstName.text.toString(),
-                        "LastName", binding.lastName.text.toString(),
-                        "Faculty", chosenFaculty,
-                        "Section", chosenSection,
-                        "StudyYear", chosenYear,
-                        "IsAdmin", false
-                    )
+                val fireStoreDb = Firebase.firestore
+                val getMandatoryCoursesTask = fireStoreDb.collection("courses")
+                    .whereEqualTo("Section", chosenSection)
+                    .whereEqualTo("Year", chosenYear)
+                    .whereEqualTo("Mandatory", true)
+                    .get()
 
-                val intent = Intent(this, HomeActivity::class.java)
-                intent.putExtra("userId", firebaseUser)
-                intent.putExtra("email", email)
-                startActivity(intent)
+                val updateStudentsMandatoryCoursesTask = getMandatoryCoursesTask.continueWithTask { task ->
+                    val mandatoryCoursesList = mutableListOf<String>()
+                    for(document in task.result.documents) {
+                        mandatoryCoursesList += document.id
+                    }
+
+                    fireStoreDb.collection("students").document(studentUid)
+                        .update(
+                            "FirstName", binding.firstName.text.toString(),
+                            "LastName", binding.lastName.text.toString(),
+                            "Faculty", chosenFaculty,
+                            "Section", chosenSection,
+                            "StudyYear", chosenYear,
+                            "IsAdmin", false,
+                            "acceptedCourses", FieldValue.arrayUnion(*mandatoryCoursesList.toTypedArray())
+                        )
+                }
+
+                val uploadImageTask = updateStudentsMandatoryCoursesTask.continueWithTask {
+                    val fileName = "profileImage$email"
+                    val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
+                    storageReference.putFile(imageUri!!)
+                }
+
+                uploadImageTask.addOnSuccessListener {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("userId", firebaseUser)
+                    intent.putExtra("email", email)
+                    startActivity(intent)
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        "Something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
-    }
-
-    private fun uploadProfileImage() {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Uploading Picture ...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
-        val email: String = intent.getStringExtra("email").toString()
-
-        val fileName = "profileImage$email"
-
-        val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
-        storageReference.putFile(imageUri!!)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Image Successfully Set", Toast.LENGTH_SHORT).show()
-                if (progressDialog.isShowing) progressDialog.dismiss()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Something Went Wrong", Toast.LENGTH_SHORT).show()
-                if (progressDialog.isShowing) progressDialog.dismiss()
-            }
-
-//        Glide.with(this)
-//            .load(imageUri)
-//            .circleCrop()
-//            .into(binding.profileImage)
     }
 
     private fun selectImage() {

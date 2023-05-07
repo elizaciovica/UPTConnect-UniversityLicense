@@ -8,28 +8,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
-import edu.licenta.uptconnect.view.adapter.EnrollCourseAdapter
 import edu.licenta.uptconnect.databinding.ActivityStudentCourseEnrollBinding
 import edu.licenta.uptconnect.model.CourseEnrollRequest
 import edu.licenta.uptconnect.model.CourseEnrollRequestStatus
+import edu.licenta.uptconnect.view.adapter.EnrollCourseAdapter
 
 class StudentCourseEnrollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityStudentCourseEnrollBinding
+
     private var coursesList = mutableListOf<CourseEnrollRequest>()
+
+    private var studentFirebaseId: String = ""
+    private var email: String = ""
+    private var imageUrl: String = ""
+    private var studentName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
+        getExtrasFromIntent()
+        setProfileDetails()
         initializeMenu(
             binding.drawerLayout,
             binding.navigationView,
             0
         )
-        getProfileDetails()
         seeAvailableCourses()
     }
 
@@ -39,14 +45,25 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
         setContentView(view)
     }
 
+    private fun setProfileDetails() {
+        Picasso.get().load(imageUrl).into(binding.profileImage)
+        binding.usernameId.text = studentName
+    }
+
+    private fun getExtrasFromIntent() {
+        email = intent.getStringExtra("email").toString()
+        studentFirebaseId = intent.getStringExtra("userId").toString()
+        imageUrl = intent.getStringExtra("imageUrl").toString()
+        studentName = intent.getStringExtra("studentName").toString()
+    }
+
     private fun seeAvailableCourses() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewEnroll)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val studentsDatabase = Firebase.firestore
-        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
         val coursesRef = studentsDatabase.collection("courses")
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
+        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId)
 
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
@@ -108,33 +125,5 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
                 binding.recyclerViewEnroll.isVisible = false
                 binding.viewForNoCoursesEnrolls.isVisible = true
             }
-    }
-
-    private fun getProfileDetails() {
-        val email: String = intent.getStringExtra("email").toString()
-        val storageRef = FirebaseStorage.getInstance().getReference("images/profileImage$email")
-        println("images/profileImage$email")
-        storageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageURL = uri.toString()
-            Picasso.get().load(imageURL).into(binding.profileImage)
-        }
-
-        val studentsDatabase = Firebase.firestore
-        val studentFirebaseId: String = intent.getStringExtra("userId").toString()
-        val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
-        // -> is a lambda consumer - based on its parameter - i need a listener to wait for the database call
-        // ex .get() - documentSnapshot is like a response body
-        //binding the dynamic linking for the xml component and the content
-        studentDoc.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.usernameId.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
-            }
-
     }
 }
