@@ -26,7 +26,7 @@
                 tools:context=".view.activity.IndividualGroupActivity"
                 android:background="#B8DCE4">
 
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -70,26 +70,27 @@
 
             <GridLayout
                     android:id="@+id/constraint_id"
-                    android:layout_width="416dp"
-                    android:layout_height="764dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:rowCount="3"
                     android:columnCount="2"
                     android:background="@drawable/two_round_corners"
-                    android:backgroundTint="#F6F3F3"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    android:layout_marginBottom="992dp">
+                    android:backgroundTint="#F6F3F3">
 
                 <com.google.android.material.card.MaterialCardView
                         android:id="@+id/chat_card"
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="70dp"
-                        android:layout_marginLeft="25dp"
+                        android:layout_marginStart="25dp"
                         android:focusable="true"
                         app:cardCornerRadius="40dp">
 
@@ -102,16 +103,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/chat"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Chat"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="50dp" />
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="10dp" />
 
                     </LinearLayout>
 
@@ -122,10 +123,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="70dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         app:cardCornerRadius="40dp">
 
                     <LinearLayout
@@ -137,16 +142,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/materials"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Materials"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="25dp" />
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="10dp" />
 
                     </LinearLayout>
 
@@ -157,10 +162,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="200dp"
                         app:cardCornerRadius="40dp">
 
                     <LinearLayout
@@ -172,16 +181,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/polls"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Polls"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="50dp" />
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="10dp" />
 
                     </LinearLayout>
 
@@ -192,10 +201,15 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="200dp"
                         app:cardCornerRadius="40dp">
 
                     <LinearLayout
@@ -207,16 +221,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/changes"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Changes"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
+                                android:layout_marginBottom="10dp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="28dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 

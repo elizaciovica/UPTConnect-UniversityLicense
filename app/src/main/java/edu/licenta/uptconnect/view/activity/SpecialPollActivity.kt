@@ -7,25 +7,28 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
-import edu.licenta.uptconnect.databinding.ActivityCreatePollBinding
-import edu.licenta.uptconnect.model.Course
+import edu.licenta.uptconnect.databinding.ActivitySpecialPollBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class CreatePollActivity : DrawerLayoutActivity() {
+class SpecialPollActivity : DrawerLayoutActivity() {
 
-    private lateinit var binding: ActivityCreatePollBinding
+    private lateinit var binding: ActivitySpecialPollBinding
 
     private val db = Firebase.firestore
 
     private var chosenDuration: String = ""
+    private var chosenGroupName: String = ""
+    private var chosenGroupId: String = ""
+    private val groupMap = HashMap<String, String>()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     private val currentTime = System.currentTimeMillis()
 
@@ -45,11 +48,12 @@ class CreatePollActivity : DrawerLayoutActivity() {
             0
         )
         setPollDurationDropDown()
+        setPollGroupDropDown()
         createPoll()
     }
 
     private fun setBinding() {
-        binding = ActivityCreatePollBinding.inflate(layoutInflater)
+        binding = ActivitySpecialPollBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
@@ -67,10 +71,8 @@ class CreatePollActivity : DrawerLayoutActivity() {
     }
 
     private fun createPoll() {
+
         val optionsList = mutableListOf<String>()
-        val course = intent.getParcelableExtra<Course>("course")!!
-        val pollCollectionRef =
-            db.collection("polls").document("courses_polls").collection(course.id)
 
         binding.optionsButton.setOnClickListener {
             val newEditText = EditText(this)
@@ -116,9 +118,11 @@ class CreatePollActivity : DrawerLayoutActivity() {
         binding.createPoll.setOnClickListener {
             val pollQuestion = binding.createTitleOfPoll.text.toString()
 
-            if (pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty()) {
+            if (pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty() || chosenGroupName.isEmpty()) {
                 Toast.makeText(
-                    this, "The poll must have a question, options and duration", Toast.LENGTH_SHORT
+                    this,
+                    "The poll must have a group selected, question, options and duration",
+                    Toast.LENGTH_SHORT
                 ).show()
             } else {
                 val poll = hashMapOf(
@@ -133,8 +137,11 @@ class CreatePollActivity : DrawerLayoutActivity() {
                         )
                     ),// 24 hours from now
                     "createdBy" to studentFirebaseId,
-                    "isFromLeader" to false
+                    "isFromLeader" to true
                 )
+
+                val pollCollectionRef =
+                    db.collection("polls").document("courses_polls").collection(chosenGroupId)
                 pollCollectionRef.document()
                     .set(poll, SetOptions.merge())
                     .addOnSuccessListener {
@@ -151,16 +158,14 @@ class CreatePollActivity : DrawerLayoutActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                seePoll()
+                backHome()
                 finish()
             }
         }
     }
 
-    private fun seePoll() {
-        val course = intent.getParcelableExtra<Course>("course")!!
-        val intent = Intent(this, PollActivity::class.java)
-        intent.putExtra("course", course)
+    private fun backHome() {
+        val intent = Intent(this, HomeActivity::class.java)
         intent.putExtra("email", email)
         intent.putExtra("userId", studentFirebaseId)
         intent.putExtra("imageUrl", imageUrl)
@@ -178,5 +183,33 @@ class CreatePollActivity : DrawerLayoutActivity() {
                 val itemSelected = adapterView.getItemAtPosition(i)
                 chosenDuration = itemSelected.toString()
             }
+    }
+
+    private fun setPollGroupDropDown() {
+
+        val getGroupsTask = db.collection("courses")
+            .get()
+
+        val populateDropDownTask = getGroupsTask.continueWithTask { task ->
+            for (document in task.result.documents) {
+                groupMap[document.data!!["Name"].toString()] = document.id
+            }
+            return@continueWithTask Tasks.forResult(null)
+        }
+
+        populateDropDownTask.addOnSuccessListener {
+
+            val groupList = ArrayList(groupMap.keys)
+            val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
+            val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
+
+            autoCompleteGroup.setAdapter(adapterGroup)
+            autoCompleteGroup.onItemClickListener =
+                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+                    val groupSelected = adapterView.getItemAtPosition(i)
+                    chosenGroupName = groupSelected.toString()
+                    chosenGroupId = groupMap[groupSelected.toString()].toString()
+                }
+        }
     }
 }

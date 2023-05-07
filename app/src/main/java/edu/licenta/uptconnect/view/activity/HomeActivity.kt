@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -54,6 +55,11 @@ class HomeActivity : DrawerLayoutActivity() {
                         "${documentSnapshot.get("FirstName")} ${documentSnapshot.get("LastName")}"
                     binding.usernameId.text = studentName
                 }
+
+                //also see if the student is Leader of the Year
+                if(documentSnapshot.get("YearLeader") == true) {
+                    binding.specialPoll.visibility = View.VISIBLE
+                }
             }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
@@ -74,6 +80,15 @@ class HomeActivity : DrawerLayoutActivity() {
     private fun initializeButtons() {
         binding.groupsCard.setOnClickListener {
             val intent = Intent(this, GroupsActivity::class.java)
+            intent.putExtra("userId", studentFirebaseId)
+            intent.putExtra("email", email)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
+            startActivity(intent)
+        }
+
+        binding.specialPoll.setOnClickListener() {
+            val intent = Intent(this, SpecialPollActivity::class.java)
             intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
             intent.putExtra("imageUrl", imageUrl)

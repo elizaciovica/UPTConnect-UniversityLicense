@@ -1,7 +1,9 @@
 package edu.licenta.uptconnect.model
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 
 data class Poll(
     val pollId: String,
@@ -9,7 +11,8 @@ data class Poll(
     val end_time: String,
     val start_time: String,
     val question: String,
-    val options: List<String>
+    val options: List<String>,
+    val isFromLeader: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -17,10 +20,12 @@ data class Poll(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.createStringArrayList()!!
+        parcel.createStringArrayList()!!,
+        parcel.readByte() != 0.toByte()
     ) {
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(pollId)
         parcel.writeString(createdBy)
@@ -28,6 +33,7 @@ data class Poll(
         parcel.writeString(start_time)
         parcel.writeString(question)
         parcel.writeStringList(options)
+        parcel.writeBoolean(isFromLeader)
     }
 
     override fun describeContents(): Int {

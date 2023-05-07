@@ -1,14 +1,20 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.DragEvent
 import android.view.Gravity
 import android.view.View
+import android.view.View.DragShadowBuilder
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
@@ -30,13 +36,13 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
     private lateinit var course: Course
     private lateinit var poll: Poll
-    private var button: Button? = null
 
     private var studentFirebaseId = ""
     private var email = ""
     private var imageUrl: String = ""
     private var studentName: String = ""
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
@@ -47,7 +53,11 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             binding.navigationView,
             0
         )
-        seePoll()
+        if (poll.isFromLeader) {
+            showLeaderPoll()
+        } else {
+            seePoll()
+        }
     }
 
     private fun setBinding() {
@@ -66,33 +76,193 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         studentFirebaseId = intent.getStringExtra("userId").toString()
         imageUrl = intent.getStringExtra("imageUrl").toString()
         studentName = intent.getStringExtra("studentName").toString()
+        course = intent.getParcelableExtra("course")!!
+        poll = intent.getParcelableExtra("poll")!!
+    }
+
+    private fun showLeaderPoll() {
+        val question = poll.question
+        val options = poll.options
+        val linearLayout = binding.newPollLayout
+        val optionOrder = mutableMapOf<String, Int>()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val currentTime = System.currentTimeMillis()
+
+        binding.questionPoll.text = question
+
+        for (option in options) {
+            val optionView = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    text = option
+                    topMargin = 50
+                    marginStart = 150
+                    marginEnd = 150
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                }
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                setBackgroundResource(R.drawable.rounded_corners)
+                gravity = Gravity.CENTER
+            }
+            optionView.isClickable = true
+            optionView.setOnLongClickListener {
+                val clipData = ClipData.newPlainText("", "")
+                val shadowBuilder = DragShadowBuilder(optionView)
+                optionView.startDragAndDrop(clipData, shadowBuilder, optionView, 0)
+                true
+            }
+            linearLayout.addView(optionView)
+        }
+
+        for (i in 0 until linearLayout.childCount) {
+            val optionView = linearLayout.getChildAt(i) as TextView
+            optionOrder[optionView.text.toString()] = i
+        }
+
+        linearLayout.setOnDragListener { view, event ->
+            when (event.action) {
+                DragEvent.ACTION_DRAG_STARTED -> {
+                    true
+                }
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    true
+                }
+                DragEvent.ACTION_DRAG_EXITED -> {
+                    true
+                }
+                DragEvent.ACTION_DRAG_LOCATION -> {
+                    val draggedView = event.localState as TextView
+                    // Clamp the y-coordinate of the drag event to the range of valid y-coordinates
+                    val y = event.y.coerceIn(0f, (view as ViewGroup).height.toFloat())
+                    // Calculate the index at which to insert the dragged view based on the y-coordinate
+                    val dropIndex = calculateDropIndex(view.parent as ViewGroup, y)
+                    // Move the dragged view to the calculated index
+                    moveViewToIndex(draggedView, dropIndex)
+                    true
+                }
+                DragEvent.ACTION_DRAG_ENDED -> {
+                    true
+                }
+                DragEvent.ACTION_DROP -> {
+                    val draggedView = event.localState as TextView
+                    val oldParent = draggedView.parent as ViewGroup
+
+                    // Get the new parent, which should be the LinearLayout
+                    val newParent = view as LinearLayout
+
+                    // Calculate the index at which to add the dragged view
+                    val dropIndex = calculateDropIndex(newParent, event.y)
+
+                    // Remove the dragged view from its old parent and add it to the new parent
+                    oldParent.removeView(draggedView)
+                    newParent.addView(draggedView, dropIndex)
+
+                    // Set the background color of the LinearLayout back to normal
+                    view.setBackgroundColor(Color.WHITE)
+
+                    // Set the visibility of the dragged view back to visible
+                    draggedView.visibility = View.VISIBLE
+
+                    var buttonSend = "SEND"
+                    binding.pollButton.text = buttonSend
+
+                    //skip the title end the button
+                    for (i in 0 until linearLayout.childCount) {
+                        val optionView = linearLayout.getChildAt(i) as TextView
+                        optionOrder[optionView.text.toString()] = i
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
+        //set your choice
+        binding.pollButton.setOnClickListener() {
+            val leaderPollCollectionRef =
+                Firebase.firestore.collection("polls")
+                    .document("courses_polls_votes_leader_polls")
+                    .collection(course.id + poll.pollId)
+            val chosenData = hashMapOf(
+                "votedBy" to studentFirebaseId,
+                "optionOrder" to optionOrder,
+                "timeOfVote" to dateFormat.format(Date(currentTime))
+            )
+            leaderPollCollectionRef.document(studentName)
+                .set(chosenData, SetOptions.merge())
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        this,
+                        "Choice recorded successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        "Error creating poll",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            recreate()
+        }
+
+        //delete poll
+        deletePollIfCreatedByCurrentUser(binding.materialCard)
+
+        //if the user already voted then disable the radio group
+        Firebase.firestore.collection("polls").document("courses_polls_votes_leader_polls")
+            .collection(course.id + poll.pollId)
+            .whereEqualTo("votedBy", studentFirebaseId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // a document already exists -> disable the radio group
+                    for (i in 0 until linearLayout.childCount) {
+                        linearLayout.getChildAt(i).isEnabled = false
+                    }
+                    //set question text to grey
+                    binding.questionPoll.setTextColor(ContextCompat.getColor(this, R.color.grey))
+                    binding.pollButton.visibility = View.GONE
+                    //todo function to get the options from firebase
+                }
+            }.addOnFailureListener { exception ->
+                Log.d(TAG, "Error retrieving poll votes", exception)
+            }
+
+        //if the end date passed -> show results
+        //todo algorithm to see at which option you entered based on the poll votes
+
+    }
+
+    private fun calculateDropIndex(parent: ViewGroup, y: Float): Int {
+        // Iterate over the children of the parent view
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            // Check if the y-coordinate of the drop location is within the bounds of the child view
+            if (y < child.y + child.height / 2) {
+                // If it is, return the index of the child view
+                return i
+            }
+        }
+        // If the y-coordinate is not within any child view, add the view to the end of the parent view
+        return parent.childCount - 1
+    }
+
+    private fun moveViewToIndex(view: View, index: Int) {
+        val parent = view.parent as ViewGroup
+        parent.removeView(view)
+        parent.addView(view, index)
     }
 
     private fun seePoll() {
-        course = intent.getParcelableExtra("course")!!
-        poll = intent.getParcelableExtra("poll")!!
         val question = poll.question
         val options = poll.options
-
-        //add the question to the layout
-        val questionTextView = TextView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 500 // set the margin top
-                marginStart = 70
-                marginEnd = 70
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
-            }
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 25f)
-            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            setBackgroundResource(R.drawable.two_round_corners)
-            gravity = Gravity.CENTER
-        }
-        questionTextView.text = question
         val linearLayout = binding.newPollLayout
-        linearLayout.addView(questionTextView)
+
+        binding.questionPoll.text = question
 
         //add the options
         val radioGroup = RadioGroup(this).apply {
@@ -119,14 +289,14 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         // add the radio group to your layout
         linearLayout.addView(radioGroup)
 
+        binding.pollButton.visibility = View.VISIBLE
         //verify if the endDate has passed
-        checkPollEndDate(questionTextView, radioGroup, poll, linearLayout)
+        checkPollEndDate(radioGroup, poll, linearLayout)
 
         //if the user already voted then disable the radio group
         Firebase.firestore.collection("polls").document("courses_polls_votes")
             .collection(course.id + poll.pollId)
             .whereEqualTo("votedBy", studentFirebaseId)
-            .whereEqualTo("pollId", poll.pollId)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
@@ -136,7 +306,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                         radioGroup.getChildAt(i).isEnabled = false
                     }
                     //set question text to grey
-                    questionTextView.setTextColor(ContextCompat.getColor(this, R.color.grey))
+                    binding.questionPoll.setTextColor(ContextCompat.getColor(this, R.color.grey))
                     for (document in querySnapshot) {
                         //put the selected option
                         val textViewChoice = TextView(this).apply {
@@ -157,6 +327,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                         val textViewChoiceText = "Your choice: ${document.data["answer"]}"
                         textViewChoice.text = textViewChoiceText
                         textViewChoice.setTextColor(ContextCompat.getColor(this, R.color.grey))
+                        binding.pollButton.visibility = View.GONE
                         linearLayout.addView(textViewChoice)
                     }
                 }
@@ -167,70 +338,60 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         //make the vote button appear when an option is selected
         var isRadioButtonSelected = false
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            if (button == null) {
-                button = Button(this).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply {
-                        topMargin = 30 // set the margin top
-                        marginStart = 70
-                        marginEnd = 70
+            // get the selected radio button and its text
+            val radioButton = group.findViewById<RadioButton>(checkedId)
+
+//                //todo deselect. does not work
+//                if (radioButton.isChecked && isRadioButtonSelected) {
+//                    // Deselect the radio button
+//                    radioButton.isChecked = false
+//                    isRadioButtonSelected = false
+//                    button?.visibility = View.INVISIBLE
+//                } else {
+//                    // Select the radio button
+//                    isRadioButtonSelected = true
+//                    button?.visibility = View.VISIBLE
+//                }
+
+            val selectedOption = radioButton.text.toString()
+            val voteText = "VOTE"
+            binding.pollButton.text = voteText
+            binding.pollButton.setOnClickListener {
+                // perform actions based on the selected option
+                val pollCollectionRef =
+                    Firebase.firestore.collection("polls")
+                        .document("courses_polls_votes")
+                        .collection(course.id + poll.pollId)
+                val pollAnswer = hashMapOf(
+                    "answer" to selectedOption,
+                    "votedBy" to studentFirebaseId
+                )
+                pollCollectionRef.document()
+                    .set(pollAnswer, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            this,
+                            "Vote recorded successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }
-                // get the selected radio button and its text
-                val radioButton = group.findViewById<RadioButton>(checkedId)
-
-                //todo deselect. does not work
-                if (radioButton.isChecked && isRadioButtonSelected) {
-                    // Deselect the radio button
-                    radioButton.isChecked = false
-                    isRadioButtonSelected = false
-                    button?.visibility = View.INVISIBLE
-                } else {
-                    // Select the radio button
-                    isRadioButtonSelected = true
-                    button?.visibility = View.VISIBLE
-                }
-
-                val selectedOption = radioButton.text.toString()
-                linearLayout.addView(button)
-                val voteText = "VOTE"
-                button?.text = voteText
-                button?.setOnClickListener {
-                    // perform actions based on the selected option
-                    val pollCollectionRef =
-                        Firebase.firestore.collection("polls")
-                            .document("courses_polls_votes")
-                            .collection(course.id + poll.pollId)
-                    val pollAnswer = hashMapOf(
-                        "answer" to selectedOption,
-                        "votedBy" to studentFirebaseId,
-                        "pollId" to poll.pollId
-                    )
-                    pollCollectionRef.document()
-                        .set(pollAnswer, SetOptions.merge())
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                "Vote recorded successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(
-                                this,
-                                "Error creating poll",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    //refresh
-                    recreate()
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            this,
+                            "Error creating poll",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                //refresh
+                recreate()
             }
         }
 
         //make possible to delete the poll if the current user created it
+        deletePollIfCreatedByCurrentUser(binding.materialCard)
+    }
+
+    private fun deletePollIfCreatedByCurrentUser(layout: LinearLayout) {
         if (poll.createdBy == studentFirebaseId) {
             val buttonDelete = Button(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -246,7 +407,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             buttonDelete.text = deleteText
             buttonDelete.setTextColor(ContextCompat.getColor(this, R.color.white))
             buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            linearLayout.addView(buttonDelete)
+            layout.addView(buttonDelete)
 
             buttonDelete.setOnClickListener {
                 showConfirmationDialog()
@@ -255,7 +416,6 @@ class IndividualPollActivity : DrawerLayoutActivity() {
     }
 
     private fun checkPollEndDate(
-        textView: TextView,
         radioGroup: RadioGroup,
         poll: Poll,
         linearLayout: LinearLayout
@@ -265,11 +425,13 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         val endDate = dateFormat.parse(poll.end_time)
         if (currentDate.before(endDate)) {
             // The current date is before the end date, so the views should be visible
-            textView.visibility = View.VISIBLE
+            binding.questionPoll.visibility = View.VISIBLE
+            binding.pollButton.visibility = View.VISIBLE
             radioGroup.visibility = View.VISIBLE
         } else {
             // The current date is after the end date, so the views should be hidden
-            textView.visibility = View.GONE
+            binding.questionPoll.visibility = View.GONE
+            binding.pollButton.visibility = View.GONE
             radioGroup.visibility = View.GONE
 
             val cardView = CardView(this).apply {
@@ -329,7 +491,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
-            val textToDisplay = "Results for: ${textView.text} poll"
+            val textToDisplay = "Results for: ${binding.questionPoll.text} poll"
             textViewStatement.text = textToDisplay
             textViewStatement.setTextColor(ContextCompat.getColor(this, R.color.white))
             linearLayoutText.addView(textViewStatement)
@@ -338,7 +500,6 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         }
     }
 
-    //maybe when voting we create a collection
     private fun calculatePollResults(poll: Poll, linearLayout: LinearLayout) {
         val pollVotesDatabase = Firebase.firestore
         val list = mutableListOf<String>()
@@ -389,19 +550,34 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         val dialog = builder.create()
 
         view.findViewById<Button>(R.id.delete_btn).setOnClickListener {
-            Firebase.firestore.collection("polls")
-                .document("courses_polls_votes")
-                .collection(course.id + poll.pollId)
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        document.reference.delete()
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error deleting documents: ", exception)
-                }
 
+            if (poll.isFromLeader) {
+                Firebase.firestore.collection("polls")
+                    .document("courses_polls_votes_leader_polls")
+                    .collection(course.id + poll.pollId)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            document.reference.delete()
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error deleting documents: ", exception)
+                    }
+            } else {
+                Firebase.firestore.collection("polls")
+                    .document("courses_polls_votes")
+                    .collection(course.id + poll.pollId)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            document.reference.delete()
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error deleting documents: ", exception)
+                    }
+            }
             Firebase.firestore.collection("polls")
                 .document("courses_polls")
                 .collection(course.id).document(poll.pollId).delete()

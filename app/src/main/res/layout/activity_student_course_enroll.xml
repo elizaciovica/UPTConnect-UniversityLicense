@@ -84,10 +84,10 @@
                         android:layout_marginTop="20px">
 
                     <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:text="Available courses"
-                            android:textSize="35sp"
+                            android:textSize="30sp"
                             android:textColor="#647292"
                             android:textStyle="bold"
                             android:fontFamily="sans-serif-condensed"
@@ -95,18 +95,20 @@
                             android:gravity="center"
                             android:background="@drawable/almostround"
                             android:backgroundTint="#B8DCE4"
-                            android:layout_marginHorizontal="40dp" />
+                            android:layout_marginHorizontal="40dp"
+                            android:layout_gravity="center_horizontal" />
 
                     <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerViewEnroll"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:dividerHeight="4dp"
                             android:scrollbars="none"
                             app:reverseLayout="true"
                             app:stackFromEnd="true"
                             android:visibility="invisible"
-                            android:layout_marginTop="40dp" />
+                            android:layout_marginTop="40dp"
+                            android:layout_gravity="center_horizontal" />
 
                     <RelativeLayout
                             android:id="@+id/viewForNoCoursesEnrolls"
