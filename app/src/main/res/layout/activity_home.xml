@@ -26,7 +26,7 @@
                 tools:context=".view.activity.HomeActivity"
                 android:background="#B8DCE4">
 
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -84,10 +84,14 @@
                         android:id="@+id/news_card"
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="40dp"
-                        android:layout_marginLeft="25dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="20dp"
                         android:focusable="true">
 
                     <LinearLayout
@@ -99,16 +103,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/news"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="News"
-                                android:textSize="30dp"
+                                android:textSize="26sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="50dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 
@@ -119,10 +122,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="40dp"
-                        android:layout_marginLeft="20dp">
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="30dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -133,16 +140,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/groups"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Groups"
-                                android:textSize="30dp"
+                                android:textSize="26sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="40dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 
@@ -153,10 +159,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp">
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -167,16 +177,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/calendar"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Calendar"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="28dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 
@@ -187,10 +196,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp">
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="30dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -201,16 +214,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/notes2"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Notes"
-                                android:textSize="30dp"
+                                android:textSize="26sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="48dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 
@@ -221,10 +233,14 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="40dp">
 
                     <LinearLayout
@@ -236,16 +252,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/maps"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Locations"
-                                android:textSize="30dp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
-                                android:layout_marginLeft="20dp" />
+                                android:layout_gravity="center" />
 
                     </LinearLayout>
 
@@ -256,12 +271,15 @@
                         style="?attr/materialCardViewElevatedStyle"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_width="172dp"
-                        android:layout_height="242dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill"
                         android:layout_marginTop="30dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginBottom="40dp"
-                        android:visibility="invisible">
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginBottom="40dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -272,16 +290,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="194dp"
                                 app:srcCompat="@drawable/polls"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="This is a description" />
+                                android:scaleType="centerCrop" />
 
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Special Poll"
-                                android:textSize="25dp"
+                                android:textSize="22sp"
                                 android:textStyle="bold"
-                                android:layout_gravity="center"/>
+                                android:layout_gravity="center"
+                                android:textAlignment="center" />
 
                     </LinearLayout>
 

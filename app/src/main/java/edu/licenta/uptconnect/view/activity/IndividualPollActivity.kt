@@ -232,6 +232,9 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 Log.d(TAG, "Error retrieving poll votes", exception)
             }
 
+        //if the end date passed -> show results
+        //todo algorithm to see at which option you entered based on the poll votes
+
     }
 
     private fun calculateDropIndex(parent: ViewGroup, y: Float): Int {
@@ -335,8 +338,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         //make the vote button appear when an option is selected
         var isRadioButtonSelected = false
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                // get the selected radio button and its text
-                val radioButton = group.findViewById<RadioButton>(checkedId)
+            // get the selected radio button and its text
+            val radioButton = group.findViewById<RadioButton>(checkedId)
 
 //                //todo deselect. does not work
 //                if (radioButton.isChecked && isRadioButtonSelected) {
@@ -350,38 +353,38 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 //                    button?.visibility = View.VISIBLE
 //                }
 
-                val selectedOption = radioButton.text.toString()
-                val voteText = "VOTE"
-                binding.pollButton.text = voteText
-                binding.pollButton.setOnClickListener {
-                    // perform actions based on the selected option
-                    val pollCollectionRef =
-                        Firebase.firestore.collection("polls")
-                            .document("courses_polls_votes")
-                            .collection(course.id + poll.pollId)
-                    val pollAnswer = hashMapOf(
-                        "answer" to selectedOption,
-                        "votedBy" to studentFirebaseId
-                    )
-                    pollCollectionRef.document()
-                        .set(pollAnswer, SetOptions.merge())
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                "Vote recorded successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(
-                                this,
-                                "Error creating poll",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    //refresh
-                    recreate()
-                }
+            val selectedOption = radioButton.text.toString()
+            val voteText = "VOTE"
+            binding.pollButton.text = voteText
+            binding.pollButton.setOnClickListener {
+                // perform actions based on the selected option
+                val pollCollectionRef =
+                    Firebase.firestore.collection("polls")
+                        .document("courses_polls_votes")
+                        .collection(course.id + poll.pollId)
+                val pollAnswer = hashMapOf(
+                    "answer" to selectedOption,
+                    "votedBy" to studentFirebaseId
+                )
+                pollCollectionRef.document()
+                    .set(pollAnswer, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            this,
+                            "Vote recorded successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            this,
+                            "Error creating poll",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                //refresh
+                recreate()
+            }
         }
 
         //make possible to delete the poll if the current user created it
@@ -427,7 +430,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             radioGroup.visibility = View.VISIBLE
         } else {
             // The current date is after the end date, so the views should be hidden
-            binding.questionPoll.visibility= View.GONE
+            binding.questionPoll.visibility = View.GONE
             binding.pollButton.visibility = View.GONE
             radioGroup.visibility = View.GONE
 
@@ -548,7 +551,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
         view.findViewById<Button>(R.id.delete_btn).setOnClickListener {
 
-            if(poll.isFromLeader) {
+            if (poll.isFromLeader) {
                 Firebase.firestore.collection("polls")
                     .document("courses_polls_votes_leader_polls")
                     .collection(course.id + poll.pollId)
