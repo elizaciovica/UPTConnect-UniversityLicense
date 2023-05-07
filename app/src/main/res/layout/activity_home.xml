@@ -251,6 +251,42 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+                <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/special_poll"
+                        style="?attr/materialCardViewElevatedStyle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_width="172dp"
+                        android:layout_height="242dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="40dp"
+                        android:visibility="invisible">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                        <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="194dp"
+                                app:srcCompat="@drawable/polls"
+                                android:scaleType="centerCrop"
+                                android:contentDescription="This is a description" />
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Special Poll"
+                                android:textSize="25dp"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
             </GridLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".view.activity.CreatePollActivity">
+        tools:context=".view.activity.SpecialPollActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -77,6 +77,26 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@drawable/two_round_corners">
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/last_name_id"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginHorizontal="62dp"
+                        android:layout_gravity="center"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                    <AutoCompleteTextView
+                            android:id="@+id/auto_complete_group"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/almostround"
+                            android:hint="Group"
+                            android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar_of_create_note"
