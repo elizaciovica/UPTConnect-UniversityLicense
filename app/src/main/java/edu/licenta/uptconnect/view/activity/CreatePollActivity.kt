@@ -1,5 +1,6 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.app.Notification
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -10,10 +11,13 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityCreatePollBinding
 import edu.licenta.uptconnect.model.Course
+import edu.licenta.uptconnect.service.MyFirebaseMessagingService
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -33,6 +37,7 @@ class CreatePollActivity : DrawerLayoutActivity() {
     private var email = ""
     private var imageUrl: String = ""
     private var studentName: String = ""
+    private lateinit var course: Course
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +72,7 @@ class CreatePollActivity : DrawerLayoutActivity() {
     }
 
     private fun createPoll() {
+        course = intent.getParcelableExtra<Course>("course")!!
         val optionsList = mutableListOf<String>()
         val course = intent.getParcelableExtra<Course>("course")!!
         val pollCollectionRef =
@@ -150,14 +156,37 @@ class CreatePollActivity : DrawerLayoutActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                sendNotification()
                 seePoll()
                 finish()
             }
         }
     }
 
+    private fun sendNotification() {
+
+        val message = RemoteMessage.Builder(course.id)
+            .setData(mapOf(
+                "title" to "New Poll Available",
+                "body" to "A new poll has been created in " + course.name
+            ))
+            .build()
+
+        //same as the one before - different approach
+//        val message2 = RemoteMessage.Builder(course.id)
+//            .addData("title", "New Poll Available")
+//            .addData("body", "A new poll has been created in " + course.name)
+//            .build()
+        //FirebaseMessaging.getInstance().send(message)
+        println("I AM HEREEE WAIT")
+        //MyFirebaseMessagingService.sendNotification(this, message) //this gives me seg fault
+
+//        val message = RemoteMessage.Builder()
+//
+      MyFirebaseMessagingService.sendMessage("New Poll Available", "A new poll has been created in " + course.name, course.id)
+    }
+
     private fun seePoll() {
-        val course = intent.getParcelableExtra<Course>("course")!!
         val intent = Intent(this, PollActivity::class.java)
         intent.putExtra("course", course)
         intent.putExtra("email", email)

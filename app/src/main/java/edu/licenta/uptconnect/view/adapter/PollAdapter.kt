@@ -41,7 +41,7 @@ class PollAdapter(
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     viewHolder.student.text =
-                        documentSnapshot.getString("FirstName") + documentSnapshot.getString("LastName")
+                        documentSnapshot.getString("FirstName ") + documentSnapshot.getString("LastName")
                 }
             }
             .addOnFailureListener { exception ->

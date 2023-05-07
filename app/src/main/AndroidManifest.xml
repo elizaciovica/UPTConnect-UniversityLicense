@@ -14,6 +14,23 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.UPTConnect"
             tools:targetApi="31">
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_baseline_home" />
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/red" />
+
+        <service
+                android:name=".service.MyFirebaseMessagingService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
                 android:name=".view.activity.IndividualPollActivity"
                 android:exported="false">

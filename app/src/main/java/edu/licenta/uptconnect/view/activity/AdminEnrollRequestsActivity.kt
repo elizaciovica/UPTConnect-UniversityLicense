@@ -16,6 +16,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityAdminenrollrequestsBinding
 import edu.licenta.uptconnect.model.EnrollRequest
@@ -122,6 +123,7 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
                     "acceptedCourses",
                     FieldValue.arrayUnion(*acceptedCourseList.toTypedArray())
                 )
+                FirebaseMessaging.getInstance().subscribeToTopic(docId)
 
                 //also delete the request from the request collection
                 requestsDatabase.collection("courseEnrollRequests").document(docId)

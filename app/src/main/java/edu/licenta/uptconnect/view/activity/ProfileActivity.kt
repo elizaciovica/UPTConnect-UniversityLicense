@@ -1,8 +1,10 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -12,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.FirebaseStorage
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityProfileBinding
@@ -170,6 +174,15 @@ class ProfileActivity : AppCompatActivity() {
                     val mandatoryCoursesList = mutableListOf<String>()
                     for(document in task.result.documents) {
                         mandatoryCoursesList += document.id
+                        Firebase.messaging.subscribeToTopic(document.id)
+                            .addOnCompleteListener { task ->
+                                var msg = "Subscribed"
+                                if (!task.isSuccessful) {
+                                    msg = "Subscribe failed"
+                                }
+                                Log.d(TAG, msg)
+                                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                            }
                     }
 
                     fireStoreDb.collection("students").document(studentUid)

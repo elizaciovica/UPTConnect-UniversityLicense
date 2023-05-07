@@ -51,6 +51,7 @@ dependencies {
     //custom
     implementation 'com.google.android.material:material:<version>'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -62,4 +63,5 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.firebaseui:firebase-ui-firestore:8.0.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
 }
