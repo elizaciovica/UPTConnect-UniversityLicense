@@ -50,9 +50,9 @@ class AdminIndividualSectionActivity : DrawerLayoutActivity() {
             startActivity(intent)
         }
         binding.createSchedule.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
+            val intent = Intent(this, CreateScheduleAdminActivity::class.java)
+            intent.putExtra("section", section)
+            startActivity(intent)
         }
     }
 }
