@@ -26,6 +26,8 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
     private lateinit var requestsAdapter: FirestoreRecyclerAdapter<EnrollRequest, AdminEnrollRequestsViewHolder>
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    private var section = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBinding()
@@ -56,9 +58,11 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
     }
 
     private fun seeAllRequests() {
+        section = intent.getStringExtra("section").toString()
         val requestsDatabase = Firebase.firestore
-        val requestsDocQuery = requestsDatabase.collection("courseEnrollRequests")
+        val requestsDocQuery = requestsDatabase.collection("courseEnrollRequests").document("sections").collection(section)
             .whereEqualTo("courseEnrollRequestStatus", "SENT")
+
         val allRequests = FirestoreRecyclerOptions.Builder<EnrollRequest>()
             .setQuery(requestsDocQuery, EnrollRequest::class.java).build()
 
@@ -94,7 +98,7 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
             val declineButton = requestViewHolder.itemView.findViewById<Button>(R.id.decline)
 
             declineButton.setOnClickListener() {
-                requestsDatabase.collection("courseEnrollRequests").document(docId)
+                requestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document(docId)
                     .delete()
                     .addOnSuccessListener {
                         Toast.makeText(
@@ -124,7 +128,7 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
                 )
 
                 //also delete the request from the request collection
-                requestsDatabase.collection("courseEnrollRequests").document(docId)
+                requestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document(docId)
                     .delete()
                     .addOnSuccessListener {
                     }

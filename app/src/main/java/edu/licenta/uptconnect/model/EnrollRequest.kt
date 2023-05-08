@@ -5,7 +5,8 @@ data class EnrollRequest(
     val courseEnrollRequestStatus: String,
     val studentId: String,
     val studentName: String,
-    val courseName: String
+    val courseName: String,
+    val section: String
 ) {
-    constructor() : this("", "", "", "", "")
+    constructor() : this("", "", "", "", "", "")
 }

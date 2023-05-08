@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import edu.licenta.uptconnect.R
-import edu.licenta.uptconnect.databinding.ActivityAdminHomeBinding
+import edu.licenta.uptconnect.databinding.ActivityAdminIndividualSectionBinding
 
-class AdminHomeActivity : DrawerLayoutActivity() {
+class AdminIndividualSectionActivity : DrawerLayoutActivity() {
 
-    private lateinit var binding: ActivityAdminHomeBinding
+    private lateinit var binding: ActivityAdminIndividualSectionBinding
+
+    private var section = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,28 +37,19 @@ class AdminHomeActivity : DrawerLayoutActivity() {
     }
 
     private fun setBinding() {
-        binding = ActivityAdminHomeBinding.inflate(layoutInflater)
+        binding = ActivityAdminIndividualSectionBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
 
     private fun initializeButtons() {
-        binding.ctienCard.setOnClickListener() {
-            val intent = Intent(this, AdminIndividualSectionActivity::class.java)
-            intent.putExtra("section", binding.ctienText.text)
+        section = intent.getStringExtra("section").toString()
+        binding.enrollRequests.setOnClickListener {
+            val intent = Intent(this, AdminEnrollRequestsActivity::class.java)
+            intent.putExtra("section", section)
             startActivity(intent)
         }
-        binding.ctiCard.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
-        }
-        binding.isCard.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
-        }
-        binding.infoCard.setOnClickListener() {
+        binding.createSchedule.setOnClickListener() {
             Toast.makeText(
                 this, "To be implemented", Toast.LENGTH_SHORT
             ).show()
