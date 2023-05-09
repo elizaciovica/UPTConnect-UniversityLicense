@@ -94,17 +94,47 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/almostround"
+                            android:backgroundTint="@color/mine8"
                             android:hint="Group"
                             android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp">
+
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Type: "
+                            android:textSize="30sp"
+                            android:textColor="#647292"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginStart="70dp"
+                            android:gravity="center" />
+
+                    <TextView
+                            android:id="@+id/course_type_text"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="#647292"
+                            android:layout_marginTop="20dp"
+                            android:gravity="start" />
+
+                </LinearLayout>
+
                 <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar_of_create_note"
+                        android:id="@+id/toolbar_of_create_poll_title"
                         android:layout_width="match_parent"
                         android:layout_marginHorizontal="30dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginTop="60dp"
-                        android:background="@drawable/almostround"
+                        android:layout_marginTop="30dp"
                         android:layout_gravity="center">
 
                     <EditText
@@ -116,28 +146,14 @@
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:hint="Enter the poll subject here"
-                            android:gravity="center"/>
+                            android:gravity="center" />
                 </androidx.appcompat.widget.Toolbar>
-
-                <com.google.android.material.button.MaterialButton
-                        android:id="@+id/options_button"
-                        android:layout_width="204dp"
-                        android:layout_height="73dp"
-                        app:cornerRadius="50dp"
-                        android:text="Add Option"
-                        android:textSize="25dp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:backgroundTint="#B8DCE4"
-                        android:layout_marginHorizontal="90dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_gravity="center"/>
 
                 <LinearLayout
                         android:id="@+id/edit_text_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"></LinearLayout>
+                        android:orientation="vertical" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="260dp"
@@ -155,6 +171,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/almostround"
+                            android:backgroundTint="@color/mine8"
                             android:hint="Poll Duration (in days)"
                             android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -172,7 +189,7 @@
                         android:layout_marginHorizontal="90dp"
                         android:layout_marginTop="15dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="400dp"/>
+                        android:layout_marginBottom="400dp" />
 
             </LinearLayout>
 

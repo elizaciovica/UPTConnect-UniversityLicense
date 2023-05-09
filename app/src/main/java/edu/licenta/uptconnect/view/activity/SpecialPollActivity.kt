@@ -1,12 +1,14 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -14,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivitySpecialPollBinding
+import edu.licenta.uptconnect.model.ScheduleData
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -48,7 +51,6 @@ class SpecialPollActivity : DrawerLayoutActivity() {
             0
         )
         setPollDurationDropDown()
-        setPollGroupDropDown()
         createPoll()
     }
 
@@ -72,94 +74,160 @@ class SpecialPollActivity : DrawerLayoutActivity() {
 
     private fun createPoll() {
 
-        val optionsList = mutableListOf<String>()
+        val coursesMap = HashMap<String, List<String>>()
+        var chosenCourseTypes: MutableList<String>
+        var finalType = ""
 
-        binding.optionsButton.setOnClickListener {
-            val newEditText = EditText(this)
-            newEditText.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+        val getGroupsTask = db.collection("courses")
+            .get()
 
-            val newText = TextView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    topMargin = 30 // set the margin top
-                    marginStart = 70
-                    marginEnd = 70
-                }
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 25f)
-                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                setBackgroundResource(R.drawable.almostround)
-                gravity = Gravity.CENTER
+        val populateDropDownTask = getGroupsTask.continueWithTask { task ->
+            for (document in task.result.documents) {
+                groupMap[document.data!!["Name"].toString()] = document.id
+                coursesMap[document.data!!["Name"].toString()] =
+                    document["Teaching Way"] as List<String>
             }
-
-            AlertDialog.Builder(this)
-                .setTitle("New option")
-                .setView(newEditText)
-                .setPositiveButton("Add") { dialog, _ ->
-                    val newOption = newEditText.text.toString()
-                    if (newOption.isNotEmpty()) {
-                        optionsList += newOption
-                        newText.text = newOption
-                        binding.editTextContainer.addView(newText)
-                    }
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
+            return@continueWithTask Tasks.forResult(null)
         }
 
-        binding.createPoll.setOnClickListener {
-            val pollQuestion = binding.createTitleOfPoll.text.toString()
+        populateDropDownTask.addOnSuccessListener {
 
-            if (pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty() || chosenGroupName.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "The poll must have a group selected, question, options and duration",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val poll = hashMapOf(
-                    "question" to pollQuestion,
-                    "options" to optionsList,
-                    "start_time" to dateFormat.format(Date(currentTime)),
-                    "end_time" to dateFormat.format(
-                        Date(
-                            currentTime + TimeUnit.DAYS.toMillis(
-                                chosenDuration.toLong()
+            val groupList = ArrayList(groupMap.keys)
+            val optionsList = mutableListOf<String>()
+            val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
+            val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
+
+            autoCompleteGroup.setAdapter(adapterGroup)
+            autoCompleteGroup.onItemClickListener =
+                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
+                    val groupSelected = adapterView.getItemAtPosition(i)
+                    chosenGroupName = groupSelected.toString()
+                    chosenGroupId = groupMap[groupSelected.toString()].toString()
+                    chosenCourseTypes = coursesMap[groupSelected.toString()] as MutableList<String>
+
+                    binding.editTextContainer.removeAllViews()
+                    optionsList.clear()
+
+                    for (courseType in chosenCourseTypes) {
+                        if (courseType != "course") {
+                            finalType = courseType
+                        }
+                    }
+
+                    binding.courseTypeText.text = finalType
+
+                    val scheduleCollectionRef =
+                        Firebase.firestore.collection("schedules")
+                            .document("courses")
+                            .collection(chosenGroupId).document(finalType)
+
+                    scheduleCollectionRef.get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists()) {
+                                //scheduleList object returned by the get() method is actually a list of HashMap objects, where each HashMap represents a single ScheduleData object
+                                val scheduleList =
+                                    documentSnapshot.get("scheduleList") as ArrayList<HashMap<String, Any>>
+                                val schedules = mutableListOf<ScheduleData>()
+
+                                //map() function to iterate over each HashMap object in the list and convert it into a ScheduleData object
+                                for (scheduleMap in scheduleList) {
+                                    val day = scheduleMap["day"] as String
+                                    val startTime = scheduleMap["startTime"] as String
+                                    val endTime = scheduleMap["endTime"] as String
+                                    val maxNoOfStudents = scheduleMap["maxNoOfStudents"] as String
+
+                                    val scheduleData =
+                                        ScheduleData(day, startTime, endTime, maxNoOfStudents)
+                                    schedules.add(scheduleData)
+                                }
+
+                                for (schedule in schedules) {
+                                    val newOption = TextView(this).apply {
+                                        layoutParams = LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                        ).apply {
+                                            topMargin = 30 // set the margin top
+                                            marginStart = 70
+                                            marginEnd = 70
+                                        }
+                                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 25f)
+                                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                                        setBackgroundResource(R.drawable.almostround)
+                                        setBackgroundColor(
+                                            ContextCompat.getColor(
+                                                this@SpecialPollActivity,
+                                                R.color.mine8
+                                            )
+                                        )
+                                        gravity = Gravity.CENTER
+                                    }
+
+                                    val optionDay =
+                                        schedule.day + " " + schedule.startTime + " " + schedule.endTime
+                                    optionsList += optionDay
+                                    newOption.text = optionDay
+                                    binding.editTextContainer.addView(newOption)
+                                }
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "This course does not have a schedule set yet.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(ContentValues.TAG, "Error retrieving schedule", e)
+                        }
+                }
+
+            binding.createPoll.setOnClickListener {
+                val pollQuestion = binding.createTitleOfPoll.text.toString()
+
+                if (pollQuestion.isEmpty() || optionsList.isEmpty() || chosenDuration.isEmpty() || chosenGroupName.isEmpty()) {
+                    Toast.makeText(
+                        this,
+                        "The poll must have a group selected, question, options and duration",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val poll = hashMapOf(
+                        "question" to pollQuestion,
+                        "options" to optionsList,
+                        "start_time" to dateFormat.format(Date(currentTime)),
+                        "end_time" to dateFormat.format(
+                            Date(
+                                currentTime + TimeUnit.DAYS.toMillis(
+                                    chosenDuration.toLong()
+                                )
                             )
-                        )
-                    ),// 24 hours from now
-                    "createdBy" to studentFirebaseId,
-                    "isFromLeader" to true
-                )
+                        ),// 24 hours from now
+                        "createdBy" to studentFirebaseId,
+                        "isFromLeader" to true
+                    )
 
-                val pollCollectionRef =
-                    db.collection("polls").document("courses_polls").collection(chosenGroupId)
-                pollCollectionRef.document()
-                    .set(poll, SetOptions.merge())
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            this,
-                            "Poll created successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            this,
-                            "Error creating poll",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                backHome()
-                finish()
+                    val pollCollectionRef =
+                        db.collection("polls").document("courses_polls").collection(chosenGroupId)
+                    pollCollectionRef.document()
+                        .set(poll, SetOptions.merge())
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this,
+                                "Poll created successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this,
+                                "Error creating poll",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    backHome()
+                    finish()
+                }
             }
         }
     }
@@ -183,33 +251,5 @@ class SpecialPollActivity : DrawerLayoutActivity() {
                 val itemSelected = adapterView.getItemAtPosition(i)
                 chosenDuration = itemSelected.toString()
             }
-    }
-
-    private fun setPollGroupDropDown() {
-
-        val getGroupsTask = db.collection("courses")
-            .get()
-
-        val populateDropDownTask = getGroupsTask.continueWithTask { task ->
-            for (document in task.result.documents) {
-                groupMap[document.data!!["Name"].toString()] = document.id
-            }
-            return@continueWithTask Tasks.forResult(null)
-        }
-
-        populateDropDownTask.addOnSuccessListener {
-
-            val groupList = ArrayList(groupMap.keys)
-            val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
-            val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
-
-            autoCompleteGroup.setAdapter(adapterGroup)
-            autoCompleteGroup.onItemClickListener =
-                AdapterView.OnItemClickListener { adapterView, _, i, _ ->
-                    val groupSelected = adapterView.getItemAtPosition(i)
-                    chosenGroupName = groupSelected.toString()
-                    chosenGroupId = groupMap[groupSelected.toString()].toString()
-                }
-        }
     }
 }
