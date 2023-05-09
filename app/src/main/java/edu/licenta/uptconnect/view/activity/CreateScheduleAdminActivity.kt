@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.ktx.firestore
@@ -24,14 +25,8 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
     private var chosenCourse: String = ""
     private var chosenType: String = ""
     private var chosenId: String = ""
-    private var selectedOption: String = ""
     private var chosenCourseTypes = mutableListOf<String>()
     private var cardViewList = mutableListOf<CardView>()
-
-    //private var chosenDay: String = ""
-    private var chosenStartHour: String = ""
-    private var chosenEndHour: String = ""
-    //private var maxNoOfStudents: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +74,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
     private fun saveSchedule() {
         binding.saveButton.setOnClickListener {
             val schedule = mutableListOf<ScheduleData>()
+            var isScheduleValid = true
 
             for (card in cardViewList) {
                 val radioGroup1 = card.findViewById<RadioGroup>(R.id.radio_group)
@@ -90,30 +86,61 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
                 val radioButton1 =
                     radioGroup1.findViewById<RadioButton>(radioGroup1.checkedRadioButtonId)
 
-                val scheduleData = ScheduleData(
-                    radioButton1.text.toString(),
-                    autoCompleteStartTime1.text.toString(),
-                    autoCompleteEndTime1.text.toString(),
-                    maxNoOfStudents1.text.toString()
-                )
+                if (autoCompleteEndTime1.text.toString()
+                        .isNotEmpty() && autoCompleteStartTime1.text.toString().isNotEmpty()
+                ) {
+                    if (autoCompleteEndTime1.text.toString()
+                            .toInt() < autoCompleteStartTime1.text.toString().toInt()
+                    ) {
+                        isScheduleValid = false
+                        Toast.makeText(
+                            this,
+                            "The end hour should be after the start hour",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                schedule.add(scheduleData)
+                }
+
+                 if(autoCompleteEndTime1.text.isEmpty() || autoCompleteStartTime1.text.isEmpty() || radioGroup1.checkedRadioButtonId == -1 ||
+                    ((chosenType != "course") && (maxNoOfStudents1.text.toString().isEmpty())) || chosenCourse.isEmpty() ) {
+                    isScheduleValid = false
+                } else {
+                    val scheduleData = ScheduleData(
+                        radioButton1.text.toString(),
+                        autoCompleteStartTime1.text.toString(),
+                        autoCompleteEndTime1.text.toString(),
+                        maxNoOfStudents1.text.toString()
+                    )
+
+                    schedule.add(scheduleData)
+                }
             }
-            val scheduleList = Schedule(schedule)
 
-            val scheduleCollectionRef =
-                Firebase.firestore.collection("schedules")
-                    .document("courses")
-                    .collection(chosenId).document(chosenType)
+            if(isScheduleValid && schedule.isNotEmpty()) {
+                val scheduleList = Schedule(schedule)
 
-            scheduleCollectionRef.set(scheduleList)
-            Toast.makeText(
-                this,
-                "Schedule created successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-            backHome()
-            finish()
+                val scheduleCollectionRef =
+                    Firebase.firestore.collection("schedules")
+                        .document("courses")
+                        .collection(chosenId).document(chosenType)
+
+                scheduleCollectionRef.set(scheduleList)
+                Toast.makeText(
+                    this,
+                    "Schedule created successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+                backHome()
+                finish()
+            }
+            else {
+                Toast.makeText(
+                    this,
+                    "All the fields are required",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -135,7 +162,6 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
         autoCompleteStart.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val itemSelected = adapterView.getItemAtPosition(i)
-                chosenStartHour = itemSelected.toString()
             }
 
         val autoCompleteEnd: AutoCompleteTextView = autoCompleteTextViewEnd
@@ -144,7 +170,6 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
         autoCompleteEnd.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val itemSelected = adapterView.getItemAtPosition(i)
-                chosenEndHour = itemSelected.toString()
             }
     }
 
