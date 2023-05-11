@@ -2,10 +2,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:card_view="http://schemas.android.com/tools"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="50dp"
         app:cardElevation="15dp"
         card_view:cardCornerRadius="5dp"
         android:backgroundTint="#FFF">
@@ -101,7 +100,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toRightOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/decline"
-                android:layout_marginHorizontal="40dp" />
+                android:layout_marginHorizontal="70dp" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/decline"
@@ -118,7 +117,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginHorizontal="40dp"
+                android:layout_marginHorizontal="70dp"
                 android:layout_marginBottom="20dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

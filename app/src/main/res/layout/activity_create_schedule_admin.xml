@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".view.activity.SpecialPollActivity">
+        tools:context=".view.activity.CreateScheduleAdminActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -23,7 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context=".view.activity.IndividualGroupActivity"
+                tools:context=".view.activity.HomeActivity"
                 android:background="#B8DCE4">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -33,8 +33,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
-                    android:src="@drawable/user"
+                    app:layout_constraintBottom_toTopOf="@+id/schedule_content"
+                    android:src="@drawable/sigla_scurta"
                     app:civ_border_width="2dp"
                     app:civ_border_color="#FF000000"
                     app:layout_constraintHorizontal_bias="0.076"
@@ -49,10 +49,10 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/profile_image"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
-                    android:text="Student Name"
+                    app:layout_constraintBottom_toTopOf="@+id/schedule_content"
+                    android:text="Admin UPT"
                     android:textStyle="bold"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     app:layout_constraintHorizontal_bias="0.13"
                     app:layout_constraintVertical_bias="0.454" />
 
@@ -63,15 +63,15 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/username_id"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
+                    app:layout_constraintBottom_toTopOf="@+id/schedule_content"
                     android:background="@drawable/toolbar"
                     app:layout_constraintHorizontal_bias="0.466"
                     app:layout_constraintVertical_bias="0.16" />
 
             <LinearLayout
-                    android:id="@+id/poll_content"
+                    android:id="@+id/schedule_content"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -81,115 +81,72 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="260dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/last_name_id"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
                         android:layout_marginTop="40dp"
                         android:layout_marginHorizontal="62dp"
                         android:layout_gravity="center"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                     <AutoCompleteTextView
-                            android:id="@+id/auto_complete_group"
+                            android:id="@+id/auto_complete_course"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/almostround"
                             android:backgroundTint="@color/mine8"
-                            android:hint="Group"
+                            android:hint="Course"
                             android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="20dp">
-
-                    <TextView
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:text="Type: "
-                            android:textSize="30sp"
-                            android:textColor="#647292"
-                            android:textStyle="bold"
-                            android:fontFamily="sans-serif-condensed"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginStart="70dp"
-                            android:gravity="center" />
-
-                    <TextView
-                            android:id="@+id/course_type_text"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:textSize="25sp"
-                            android:textStyle="bold"
-                            android:textColor="#647292"
-                            android:layout_marginTop="20dp"
-                            android:gravity="start" />
-
-                </LinearLayout>
-
-                <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar_of_create_poll_title"
-                        android:layout_width="match_parent"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginTop="30dp"
-                        android:layout_gravity="center">
-
-                    <EditText
-                            android:id="@+id/create_title_of_poll"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:paddingTop="12dp"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:hint="Enter the poll subject here"
-                            android:gravity="center" />
-                </androidx.appcompat.widget.Toolbar>
-
-                <LinearLayout
-                        android:id="@+id/edit_text_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="260dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/last_name_id"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:layout_marginTop="40dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginHorizontal="62dp"
                         android:layout_gravity="center"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                     <AutoCompleteTextView
-                            android:id="@+id/auto_complete_poll_duration"
+                            android:id="@+id/auto_complete_course_type"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/almostround"
                             android:backgroundTint="@color/mine8"
-                            android:hint="Poll Duration (in days)"
+                            android:hint="Type"
                             android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                        android:id="@+id/create_poll"
+                        android:id="@+id/options_days_button"
                         android:layout_width="204dp"
                         android:layout_height="73dp"
                         app:cornerRadius="50dp"
-                        android:text="Create poll"
+                        android:text="Choose Days"
                         android:textSize="25dp"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:backgroundTint="#B8DCE4"
                         android:layout_marginHorizontal="90dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="400dp" />
+                        android:layout_marginTop="25dp"
+                        android:layout_gravity="center" />
+
+                <LinearLayout
+                        android:id="@+id/schedule_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/save_button"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
+                        app:cornerRadius="50dp"
+                        android:text="SAVE"
+                        android:textSize="25dp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"
+                        android:backgroundTint="#B8DCE4"
+                        android:layout_marginHorizontal="90dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_gravity="center" />
 
             </LinearLayout>
 

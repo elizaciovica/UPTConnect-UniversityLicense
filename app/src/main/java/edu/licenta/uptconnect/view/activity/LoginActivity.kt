@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initializeButtons() {
         // FIXME: delete me - and do not commit me!
-        forcedLogin("sign@student.upt.ro", "111111")
+        //forcedLogin("sign@student.upt.ro", "111111")
 
         binding.loginButton.setOnClickListener() {
             loginAction()

@@ -2,7 +2,6 @@ package edu.licenta.uptconnect.view.activity
 
 import android.annotation.SuppressLint
 import android.content.ClipData
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Color
@@ -27,12 +26,14 @@ import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityIndividualPollBinding
 import edu.licenta.uptconnect.model.Course
 import edu.licenta.uptconnect.model.Poll
+import edu.licenta.uptconnect.util.CoursePlacesAssignmentUtil
 import java.text.SimpleDateFormat
 import java.util.*
 
 class IndividualPollActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityIndividualPollBinding
+    private val coursePlacesAssignmentUtil = CoursePlacesAssignmentUtil()
 
     private lateinit var course: Course
     private lateinit var poll: Poll
@@ -56,7 +57,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         if (poll.isFromLeader) {
             showLeaderPoll()
         } else {
-            seePoll()
+            seeUsualPoll()
         }
     }
 
@@ -179,7 +180,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             }
         }
 
-        //set your choice
+        //set the choice and refresh activity
         binding.pollButton.setOnClickListener() {
             val leaderPollCollectionRef =
                 Firebase.firestore.collection("polls")
@@ -209,11 +210,185 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             recreate()
         }
 
-        //delete poll
+        //delete poll is available for the user who created it
         deletePollIfCreatedByCurrentUser(binding.materialCard)
 
-        //if the user already voted then disable the radio group
-        Firebase.firestore.collection("polls").document("courses_polls_votes_leader_polls")
+        //if the user already voted then disable the options
+        disableOptionsIfTheUserAlreadyVoted(binding.newPollLayout)
+
+        //if the end date passed -> show results after calling the algorithm
+        //the first person who enters the poll will trigger the algorithm and a flag will be set for
+        //results for the other persons not to trigger it again
+        val currentDate = Date()
+        val endDate = dateFormat.parse(poll.end_time)
+
+        if (endDate.before(currentDate) && !poll.hasResults) {
+
+            binding.questionPoll.text = "Results for " + poll.question
+            binding.pollButton.visibility = View.GONE
+            for (i in 0 until linearLayout.childCount) {
+                linearLayout.getChildAt(i).visibility = View.GONE
+            }
+
+            val task = coursePlacesAssignmentUtil.getDataFromFirebaseAndRearangeItBasedOnTimeStamp(
+                course.id,
+                poll.pollId
+            )
+
+            task.addOnSuccessListener { finalListOfPollChoices ->
+
+                //todo change the hardcoded type
+                val scheduleHoursTask =
+                    coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, "laboratory")
+                scheduleHoursTask.addOnSuccessListener { scheduleHours ->
+                    val results = coursePlacesAssignmentUtil.pollResultsAlgorithm(
+                        finalListOfPollChoices,
+                        scheduleHours
+                    )
+
+                    val stringKeyMap = HashMap<String, MutableList<String>>()
+                    for ((scheduleData, courseList) in results) {
+                        val scheduleDataDay =
+                            scheduleData.day + " " + scheduleData.startTime + " - " + scheduleData.endTime
+                        stringKeyMap[scheduleDataDay] = courseList
+                    }
+
+                    Firebase.firestore
+                        .collection("courses_repartition")
+                        .document("courses")
+                        .collection(course.id)
+                        .document("laboratory")
+                        .set(stringKeyMap, SetOptions.merge())
+                        .addOnSuccessListener {
+                            //save the results and also trigger the flag
+                            Firebase.firestore.collection("polls")
+                                .document("courses_polls")
+                                .collection(course.id)
+                                .document(poll.pollId)
+                                .update("hasResults", true)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.d(TAG, "Failure when creating the repartition", exception)
+                        }
+
+                    //change the layout in this case
+                    for ((scheduleData, students) in results) {
+                        for (student in students) {
+                            val studentsDatabase = Firebase.firestore
+                            val studentDoc =
+                                studentsDatabase.collection("students").document(student)
+                            studentDoc
+                                .get()
+                                .addOnSuccessListener { documentSnapshot ->
+                                    if (documentSnapshot.exists()) {
+                                        studentName =
+                                            "${documentSnapshot.get("FirstName")} ${
+                                                documentSnapshot.get(
+                                                    "LastName"
+                                                )
+                                            }"
+
+                                        val labStudentsView = TextView(this).apply {
+                                            layoutParams = LinearLayout.LayoutParams(
+                                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                                LinearLayout.LayoutParams.WRAP_CONTENT
+                                            ).apply {
+                                                text =
+                                                    "$studentName - ${scheduleData.day} ${scheduleData.startTime} - ${scheduleData.endTime}"
+                                                topMargin = 50
+                                                marginStart = 150
+                                                marginEnd = 150
+                                                textAlignment = View.TEXT_ALIGNMENT_CENTER
+                                            }
+                                            setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                                            setBackgroundResource(R.drawable.rounded_corners)
+                                            gravity = Gravity.CENTER
+                                        }
+                                        linearLayout.addView(labStudentsView)
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+        //if the end date has passed, but the algorithm was already triggered
+        val queryHashmapData = HashMap<String, MutableList<String>>()
+        if (endDate.before(currentDate) && poll.hasResults) {
+
+            binding.questionPoll.text = "Results for " + poll.question
+            binding.pollButton.visibility = View.GONE
+            for (i in 0 until linearLayout.childCount) {
+                linearLayout.getChildAt(i).visibility = View.GONE
+            }
+
+            val getRepartitionTask =
+                Firebase.firestore.collection("courses_repartition").document("courses")
+                    .collection(course.id).document("laboratory").get()
+
+            getRepartitionTask.addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val data = documentSnapshot.data
+                    if (data != null) {
+                        for ((field, value) in data) {
+                            if (value is ArrayList<*>) {
+                                val mutableList = mutableListOf<String>()
+                                for (element in value) {
+                                    if (element is String) {
+                                        mutableList.add(element)
+                                    }
+                                }
+                                queryHashmapData[field] = mutableList
+                            }
+                        }
+
+                        //change the layout in this case
+                        for ((scheduleData, students) in queryHashmapData) {
+                            for (student in students) {
+                                val studentsDatabase = Firebase.firestore
+                                val studentDocTask =
+                                    studentsDatabase.collection("students").document(student).get()
+                                studentDocTask
+                                    .addOnSuccessListener { documentSnapshot ->
+                                        if (documentSnapshot.exists()) {
+                                            studentName =
+                                                "${documentSnapshot.get("FirstName")} ${
+                                                    documentSnapshot.get(
+                                                        "LastName"
+                                                    )
+                                                }"
+                                            val labStudentsView = TextView(this).apply {
+                                                layoutParams = LinearLayout.LayoutParams(
+                                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                                                ).apply {
+                                                    text = "$studentName - $scheduleData"
+                                                    topMargin = 50
+                                                    bottomMargin = 70
+                                                    marginStart = 150
+                                                    marginEnd = 150
+                                                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                                                }
+                                                setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                                                setBackgroundResource(R.drawable.rounded_corners)
+                                                gravity = Gravity.CENTER
+                                            }
+                                            linearLayout.addView(labStudentsView)
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun disableOptionsIfTheUserAlreadyVoted(linearLayout: LinearLayout) {
+        Firebase.firestore
+            .collection("polls")
+            .document("courses_polls_votes_leader_polls")
             .collection(course.id + poll.pollId)
             .whereEqualTo("votedBy", studentFirebaseId)
             .get()
@@ -226,15 +401,11 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     //set question text to grey
                     binding.questionPoll.setTextColor(ContextCompat.getColor(this, R.color.grey))
                     binding.pollButton.visibility = View.GONE
-                    //todo function to get the options from firebase
                 }
-            }.addOnFailureListener { exception ->
+            }
+            .addOnFailureListener { exception ->
                 Log.d(TAG, "Error retrieving poll votes", exception)
             }
-
-        //if the end date passed -> show results
-        //todo algorithm to see at which option you entered based on the poll votes
-
     }
 
     private fun calculateDropIndex(parent: ViewGroup, y: Float): Int {
@@ -257,7 +428,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         parent.addView(view, index)
     }
 
-    private fun seePoll() {
+    private fun seeUsualPoll() {
         val question = poll.question
         val options = poll.options
         val linearLayout = binding.newPollLayout
@@ -288,10 +459,10 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         }
         // add the radio group to your layout
         linearLayout.addView(radioGroup)
-
         binding.pollButton.visibility = View.VISIBLE
+
         //verify if the endDate has passed
-        checkPollEndDate(radioGroup, poll, linearLayout)
+        checkPollEndDateForUsualPoll(radioGroup, poll, linearLayout)
 
         //if the user already voted then disable the radio group
         Firebase.firestore.collection("polls").document("courses_polls_votes")
@@ -332,34 +503,21 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     }
                 }
             }.addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving poll votes", exception)
+                Log.d(TAG, "Error retrieving poll votes", exception)
             }
 
         //make the vote button appear when an option is selected
-        var isRadioButtonSelected = false
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             // get the selected radio button and its text
             val radioButton = group.findViewById<RadioButton>(checkedId)
-
-//                //todo deselect. does not work
-//                if (radioButton.isChecked && isRadioButtonSelected) {
-//                    // Deselect the radio button
-//                    radioButton.isChecked = false
-//                    isRadioButtonSelected = false
-//                    button?.visibility = View.INVISIBLE
-//                } else {
-//                    // Select the radio button
-//                    isRadioButtonSelected = true
-//                    button?.visibility = View.VISIBLE
-//                }
-
             val selectedOption = radioButton.text.toString()
             val voteText = "VOTE"
             binding.pollButton.text = voteText
             binding.pollButton.setOnClickListener {
                 // perform actions based on the selected option
                 val pollCollectionRef =
-                    Firebase.firestore.collection("polls")
+                    Firebase.firestore
+                        .collection("polls")
                         .document("courses_polls_votes")
                         .collection(course.id + poll.pollId)
                 val pollAnswer = hashMapOf(
@@ -391,31 +549,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         deletePollIfCreatedByCurrentUser(binding.materialCard)
     }
 
-    private fun deletePollIfCreatedByCurrentUser(layout: LinearLayout) {
-        if (poll.createdBy == studentFirebaseId) {
-            val buttonDelete = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    topMargin = 100 // set the margin top
-                    leftMargin = 200
-                    rightMargin = 200
-                }
-            }
-            val deleteText = "DELETE POLL"
-            buttonDelete.text = deleteText
-            buttonDelete.setTextColor(ContextCompat.getColor(this, R.color.white))
-            buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-            layout.addView(buttonDelete)
-
-            buttonDelete.setOnClickListener {
-                showConfirmationDialog()
-            }
-        }
-    }
-
-    private fun checkPollEndDate(
+    private fun checkPollEndDateForUsualPoll(
         radioGroup: RadioGroup,
         poll: Poll,
         linearLayout: LinearLayout
@@ -540,6 +674,30 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         intent.putExtra("imageUrl", imageUrl)
         intent.putExtra("studentName", studentName)
         startActivity(intent)
+    }
+
+    private fun deletePollIfCreatedByCurrentUser(layout: LinearLayout) {
+        if (poll.createdBy == studentFirebaseId) {
+            val buttonDelete = Button(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = 100 // set the margin top
+                    leftMargin = 200
+                    rightMargin = 200
+                }
+            }
+            val deleteText = "DELETE POLL"
+            buttonDelete.text = deleteText
+            buttonDelete.setTextColor(ContextCompat.getColor(this, R.color.white))
+            buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
+            layout.addView(buttonDelete)
+
+            buttonDelete.setOnClickListener {
+                showConfirmationDialog()
+            }
+        }
     }
 
     private fun showConfirmationDialog() {

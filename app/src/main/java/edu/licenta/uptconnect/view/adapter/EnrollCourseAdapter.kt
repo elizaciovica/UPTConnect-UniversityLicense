@@ -43,7 +43,8 @@ class EnrollCourseAdapter(
                 dataSet[position].id,
                 dataSet[position].studentId,
                 dataSet[position].studentName,
-                dataSet[position].name
+                dataSet[position].name,
+                dataSet[position].section
             )
         }
 
@@ -77,7 +78,8 @@ class EnrollCourseAdapter(
         courseId: String,
         studentId: String,
         studentName: String,
-        courseName: String
+        courseName: String,
+        section: String
     ) {
         val courseEnrollRequestsDatabase = Firebase.firestore
         val courseEnrollRequest = hashMapOf(
@@ -87,7 +89,7 @@ class EnrollCourseAdapter(
             "studentName" to studentName,
             "courseName" to courseName
         )
-        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document(courseId)
+        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document()
             .set(courseEnrollRequest, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d(
