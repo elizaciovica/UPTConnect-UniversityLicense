@@ -134,7 +134,8 @@ class CreatePollActivity : DrawerLayoutActivity() {
                     ),// 24 hours from now
                     "createdBy" to studentFirebaseId,
                     "isFromLeader" to false,
-                    "hasResults" to false
+                    "hasResults" to false,
+                    "type" to "noType"
                 )
                 pollCollectionRef.document()
                     .set(poll, SetOptions.merge())

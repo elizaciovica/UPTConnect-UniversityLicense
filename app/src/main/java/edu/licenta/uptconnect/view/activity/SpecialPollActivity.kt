@@ -205,7 +205,8 @@ class SpecialPollActivity : DrawerLayoutActivity() {
                         ),// 24 hours from now
                         "createdBy" to studentFirebaseId,
                         "isFromLeader" to true,
-                        "hasResults" to false
+                        "hasResults" to false,
+                        "type" to finalType
                     )
 
                     val pollCollectionRef =
