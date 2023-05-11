@@ -81,7 +81,8 @@ class PollActivity : DrawerLayoutActivity() {
                         val question = pollData["question"] as String
                         val options = pollData["options"] as List<String>
                         val isFromLeader = pollData["isFromLeader"] as Boolean
-                        val poll = Poll(pollId, createdBy, endTime, startTime, question, options, isFromLeader)
+                        val hasResults = pollData["hasResults"] as Boolean
+                        val poll = Poll(pollId, createdBy, endTime, startTime, question, options, isFromLeader, hasResults)
                         pollList.add(poll)
                     }
                     val adapter = PollAdapter(pollList)

@@ -4,5 +4,5 @@ data class ScheduleData(
     val day: String,
     val startTime: String,
     val endTime: String,
-    val maxNoOfStudents: String
+    var maxNoOfStudents: String
 )
