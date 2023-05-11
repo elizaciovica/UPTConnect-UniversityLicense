@@ -121,7 +121,7 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
                 val studentsDatabase = Firebase.firestore
                 val studentDoc = studentsDatabase.collection("students").document(request.studentId)
                 var acceptedCourseList = listOf<String>()
-                acceptedCourseList += docId
+                acceptedCourseList += request.courseId
                 studentDoc.update(
                     "acceptedCourses",
                     FieldValue.arrayUnion(*acceptedCourseList.toTypedArray())
