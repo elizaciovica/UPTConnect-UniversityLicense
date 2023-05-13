@@ -1,12 +1,16 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.Tasks
@@ -22,7 +26,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class SpecialPollActivity : DrawerLayoutActivity() {
+class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener {
 
     private lateinit var binding: ActivitySpecialPollBinding
 
@@ -31,14 +36,26 @@ class SpecialPollActivity : DrawerLayoutActivity() {
     private var chosenDuration: String = ""
     private var chosenGroupName: String = ""
     private var chosenGroupId: String = ""
+    private var chosenStartDate: String = ""
     private val groupMap = HashMap<String, String>()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val currentTime = System.currentTimeMillis()
+    private val calendar = Calendar.getInstance()
 
     private var studentFirebaseId = ""
     private var email = ""
     private var imageUrl: String = ""
     private var studentName: String = ""
+
+    private var day = 0
+    private var month: Int = 0
+    private var year: Int = 0
+    private var hour: Int = 0
+    private var minute: Int = 0
+    private var chosenDay = 0
+    private var chosenMouth: Int = 0
+    private var chosenYear: Int = 0
+    private var chosenHour: Int = 0
+    private var chosenMinute: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +69,7 @@ class SpecialPollActivity : DrawerLayoutActivity() {
         )
         setPollDurationDropDown()
         createPoll()
+        choosePollStartDateAndTime()
     }
 
     private fun setBinding() {
@@ -192,17 +210,17 @@ class SpecialPollActivity : DrawerLayoutActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
+
+                    calendar.time = dateFormat.parse(chosenStartDate)!!
+                    calendar.add(Calendar.DAY_OF_YEAR, chosenDuration.toInt())
+
                     val poll = hashMapOf(
                         "question" to pollQuestion,
                         "options" to optionsList,
-                        "start_time" to dateFormat.format(Date(currentTime)),
+                        "start_time" to chosenStartDate,
                         "end_time" to dateFormat.format(
-                            Date(
-                                currentTime + TimeUnit.DAYS.toMillis(
-                                    chosenDuration.toLong()
-                                )
-                            )
-                        ),// 24 hours from now
+                            calendar.time
+                        ),
                         "createdBy" to studentFirebaseId,
                         "isFromLeader" to true,
                         "hasResults" to false,
@@ -253,5 +271,46 @@ class SpecialPollActivity : DrawerLayoutActivity() {
                 val itemSelected = adapterView.getItemAtPosition(i)
                 chosenDuration = itemSelected.toString()
             }
+    }
+
+    private fun choosePollStartDateAndTime() {
+        binding.startDateButton.setOnClickListener {
+            day = calendar.get(Calendar.DAY_OF_MONTH)
+            month = calendar.get(Calendar.MONTH)
+            year = calendar.get(Calendar.YEAR)
+            val datePickerDialog =
+                DatePickerDialog(this@SpecialPollActivity, this@SpecialPollActivity, year, month, day)
+            datePickerDialog.show()
+        }
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        chosenDay = day
+        chosenYear = year
+        chosenMouth = month
+        hour = calendar.get(Calendar.HOUR)
+        minute = calendar.get(Calendar.MINUTE)
+        val timePickerDialog = TimePickerDialog(
+            this@SpecialPollActivity, this@SpecialPollActivity, hour, minute,
+            DateFormat.is24HourFormat(this)
+        )
+        timePickerDialog.show()
+    }
+
+    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+        binding.chosenDate.visibility = View.VISIBLE
+        chosenHour = hourOfDay
+        chosenMinute = minute
+
+        calendar.set(Calendar.YEAR, chosenYear)
+        calendar.set(Calendar.MONTH, chosenMouth)
+        calendar.set(Calendar.DAY_OF_MONTH, chosenDay)
+        calendar.set(Calendar.HOUR_OF_DAY, chosenHour)
+        calendar.set(Calendar.MINUTE, chosenMinute)
+        val date = calendar.time
+        val formattedDate = dateFormat.format(date).toString()
+
+        binding.chosenDate.text = formattedDate
+        chosenStartDate = formattedDate
     }
 }
