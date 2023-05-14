@@ -239,7 +239,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
                 //todo change the hardcoded type
                 val scheduleHoursTask =
-                    coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, "laboratory")
+                    coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, poll.type)
                 scheduleHoursTask.addOnSuccessListener { scheduleHours ->
                     val results = coursePlacesAssignmentUtil.pollResultsAlgorithm(
                         finalListOfPollChoices,
@@ -257,7 +257,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                         .collection("courses_repartition")
                         .document("courses")
                         .collection(course.id)
-                        .document("laboratory")
+                        .document(poll.type)
                         .set(stringKeyMap, SetOptions.merge())
                         .addOnSuccessListener {
                             //save the results and also trigger the flag
@@ -325,7 +325,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
             val getRepartitionTask =
                 Firebase.firestore.collection("courses_repartition").document("courses")
-                    .collection(course.id).document("laboratory").get()
+                    .collection(course.id).document(poll.type).get()
 
             getRepartitionTask.addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {

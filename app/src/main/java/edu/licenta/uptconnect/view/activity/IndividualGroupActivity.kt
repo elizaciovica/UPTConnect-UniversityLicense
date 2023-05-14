@@ -65,5 +65,15 @@ class IndividualGroupActivity : DrawerLayoutActivity() {
             intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
+
+        binding.changesCard.setOnClickListener {
+            val intent = Intent(this, ChangesActivity::class.java)
+            intent.putExtra("course", course)
+            intent.putExtra("email", email)
+            intent.putExtra("userId", studentFirebaseId)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
+            startActivity(intent)
+        }
     }
 }

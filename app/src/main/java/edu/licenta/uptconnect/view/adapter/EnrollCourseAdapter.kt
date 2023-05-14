@@ -44,13 +44,14 @@ class EnrollCourseAdapter(
                 dataSet[position].studentId,
                 dataSet[position].studentName,
                 dataSet[position].name,
-                dataSet[position].section
+                dataSet[position].section,
+                position
             )
         }
 
         viewHolder.cancelButton.setOnClickListener() {
             revertButtons(position, viewHolder)
-            cancelCourseEnrollRequest(dataSet[position].id)
+            cancelCourseEnrollRequest(dataSet[position].section, position)
         }
 
         verifyIfRequestHasBeenUpdated(position, viewHolder)
@@ -79,7 +80,8 @@ class EnrollCourseAdapter(
         studentId: String,
         studentName: String,
         courseName: String,
-        section: String
+        section: String,
+        position: Int
     ) {
         val courseEnrollRequestsDatabase = Firebase.firestore
         val courseEnrollRequest = hashMapOf(
@@ -87,9 +89,10 @@ class EnrollCourseAdapter(
             "studentId" to studentId,
             "courseEnrollRequestStatus" to CourseEnrollRequestStatus.SENT,
             "studentName" to studentName,
-            "courseName" to courseName
+            "courseName" to courseName,
+            "section" to section
         )
-        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document()
+        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document(dataSet[position].id + dataSet[position].studentId)
             .set(courseEnrollRequest, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d(
@@ -100,9 +103,9 @@ class EnrollCourseAdapter(
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error creating Document", e) }
     }
 
-    private fun cancelCourseEnrollRequest(courseId: String) {
+    private fun cancelCourseEnrollRequest(section: String, position: Int) {
         val courseEnrollRequestsDatabase = Firebase.firestore
-        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document(courseId)
+        courseEnrollRequestsDatabase.collection("courseEnrollRequests").document("sections").collection(section).document(dataSet[position].id + dataSet[position].studentId)
             .update(
                 "courseEnrollRequestStatus", CourseEnrollRequestStatus.CANCELED
             )
@@ -110,7 +113,7 @@ class EnrollCourseAdapter(
 
     private fun verifyIfRequestHasBeenUpdated(position: Int, viewHolder: ViewHolder) {
         val courseEnrollRequestsDatabase = Firebase.firestore
-        val courseEnrollRequest = courseEnrollRequestsDatabase.collection("courseEnrollRequests")
+        val courseEnrollRequest = courseEnrollRequestsDatabase.collection("courseEnrollRequests").document("sections").collection(dataSet[position].section)
         courseEnrollRequest.whereEqualTo("studentId", dataSet[position].studentId)
             .whereEqualTo("courseId", dataSet[position].id)
             .whereEqualTo("courseEnrollRequestStatus", CourseEnrollRequestStatus.SENT.toString())

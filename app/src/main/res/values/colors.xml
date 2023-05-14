@@ -9,9 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#4E0000</color>
     <color name="red2">#5C2A2A</color>
+    <color name="red3">#E48A8A</color>
     <color name="course">#E2DDE3</color>
 
     <color name="grey">#91908F</color>
+    <color name="grey2">#CDCCCB</color>
     <color name="mine1">#E4B7A0</color>
     <color name="mine2">#DAFDC9</color>
     <color name="mine3">#C9D4FD</color>

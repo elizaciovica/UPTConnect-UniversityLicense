@@ -13,7 +13,8 @@ data class Poll(
     val question: String,
     val options: List<String>,
     val isFromLeader: Boolean,
-    val hasResults: Boolean
+    val hasResults: Boolean,
+    val type: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -23,7 +24,8 @@ data class Poll(
         parcel.readString()!!,
         parcel.createStringArrayList()!!,
         parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte()
+        parcel.readByte() != 0.toByte(),
+        parcel.readString()!!
     ) {
     }
 
@@ -37,6 +39,7 @@ data class Poll(
         parcel.writeStringList(options)
         parcel.writeBoolean(isFromLeader)
         parcel.writeBoolean(hasResults)
+        parcel.writeString(type)
     }
 
     override fun describeContents(): Int {
