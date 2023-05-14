@@ -35,7 +35,6 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
         navigationView.menu.findItem(R.id.home).isVisible = false
         navigationView.menu.findItem(R.id.edit_profile).isVisible = false
         navigationView.menu.findItem(R.id.my_colleagues).isVisible = false
-        navigationView.menu.findItem(R.id.my_courses).isVisible = false
 
         val headerView = navigationView.getHeaderView(0)
         headerView.findViewById<TextView>(R.id.header_text).text = "ADMIN"
