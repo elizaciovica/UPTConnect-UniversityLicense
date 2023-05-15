@@ -20,12 +20,6 @@
                     android:checkable="true"
                     app:showAsAction="ifRoom" />
             <item
-                    android:id="@+id/my_colleagues"
-                    android:icon="@drawable/ic_baseline_colleagues"
-                    android:title="My colleagues"
-                    android:checkable="true"
-                    app:showAsAction="ifRoom" />
-            <item
                     android:id="@+id/log_out"
                     android:icon="@drawable/ic_baseline_logout"
                     android:title="Log out"

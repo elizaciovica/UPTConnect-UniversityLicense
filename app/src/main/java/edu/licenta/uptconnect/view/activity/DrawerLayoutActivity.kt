@@ -57,7 +57,6 @@ open class DrawerLayoutActivity : AppCompatActivity() {
             0 -> navigation.setCheckedItem(0)
             1 -> navigation.setCheckedItem(R.id.home)
             2 -> navigation.setCheckedItem(R.id.edit_profile)
-            3 -> navigation.setCheckedItem(R.id.my_colleagues)
         }
         getStudentEmail()
     }
@@ -81,10 +80,6 @@ open class DrawerLayoutActivity : AppCompatActivity() {
             intent.putExtra("userId", FirebaseAuth.getInstance().currentUser!!.uid)
             intent.putExtra("email", FirebaseAuth.getInstance().currentUser!!.email)
             startActivity(intent)
-            return true
-        }
-        if (item.itemId == R.id.my_colleagues) {
-            Toast.makeText(applicationContext, "Clicked my colleagues", Toast.LENGTH_SHORT).show()
             return true
         }
         if (item.itemId == R.id.log_out) {
