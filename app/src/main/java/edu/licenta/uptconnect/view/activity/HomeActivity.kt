@@ -87,8 +87,17 @@ class HomeActivity : DrawerLayoutActivity() {
             startActivity(intent)
         }
 
-        binding.specialPoll.setOnClickListener() {
+        binding.specialPoll.setOnClickListener {
             val intent = Intent(this, SpecialPollActivity::class.java)
+            intent.putExtra("userId", studentFirebaseId)
+            intent.putExtra("email", email)
+            intent.putExtra("imageUrl", imageUrl)
+            intent.putExtra("studentName", studentName)
+            startActivity(intent)
+        }
+
+        binding.newsCard.setOnClickListener {
+            val intent = Intent(this, NewsActivity::class.java)
             intent.putExtra("userId", studentFirebaseId)
             intent.putExtra("email", email)
             intent.putExtra("imageUrl", imageUrl)

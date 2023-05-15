@@ -2,10 +2,12 @@ package edu.licenta.uptconnect.view.activity
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -88,6 +90,7 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
         val course = intent.getParcelableExtra<Course>("course")!!
         val pollCollectionRef =
             db.collection("polls").document("courses_polls").collection(course.id)
+        val newsCollectionRef = db.collection("news")
 
         binding.optionsButton.setOnClickListener {
             val newEditText = EditText(this)
@@ -170,6 +173,25 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
+                val currentTime = System.currentTimeMillis()
+                val formattedTime = dateFormat.format(Date(currentTime))
+                val newsTitle = "New Poll"
+                val newsContent = "A poll was created in " + course.name + " group, by " + studentName
+                val new = hashMapOf(
+                    "title" to newsTitle,
+                    "content" to newsContent,
+                    "time" to formattedTime,
+                    "courseId" to course.id
+                )
+                newsCollectionRef.document()
+                    .set(new, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "News created successfully")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d(ContentValues.TAG, "Error creating news", exception)
+                    }
                 seePoll()
                 finish()
             }
@@ -211,7 +233,7 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        chosenDay = day
+        chosenDay = dayOfMonth
         chosenYear = year
         chosenMouth = month
         hour = calendar.get(Calendar.HOUR)
