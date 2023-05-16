@@ -26,6 +26,7 @@ class NewsActivity : DrawerLayoutActivity() {
     private var imageUrl: String = ""
     private var studentName: String = ""
     private var courses = mutableListOf<String>()
+    private var isLeader = false
     private var newsAdapter: FirestoreRecyclerAdapter<New, NewsAdapter.NewsViewHolder>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,19 +69,24 @@ class NewsActivity : DrawerLayoutActivity() {
             intent.putExtra("imageUrl", imageUrl)
             intent.putExtra("studentName", studentName)
             intent.putExtra("coursesIds", courses.toTypedArray())
+            intent.putExtra("isLeader", isLeader)
             startActivity(intent)
         }
     }
 
     private fun seeAvailableNews() {
 
-        //todo when is no new
         val getStudentCoursesTask = Firebase.firestore
             .collection("students")
             .document(studentFirebaseId)
             .get()
         getStudentCoursesTask.addOnSuccessListener { task ->
             courses = task.get("acceptedCourses") as MutableList<String>
+            if (task.get("YearLeader") == null) {
+                isLeader = false
+            } else {
+                isLeader = task.get("YearLeader") as Boolean
+            }
             binding.viewForNoNews.visibility = View.GONE
             binding.progressBar.visibility = View.GONE
             binding.newsRecyclerView.visibility = View.VISIBLE
