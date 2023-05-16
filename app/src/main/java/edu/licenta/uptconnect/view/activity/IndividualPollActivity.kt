@@ -2,6 +2,7 @@ package edu.licenta.uptconnect.view.activity
 
 import android.annotation.SuppressLint
 import android.content.ClipData
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Color
@@ -703,6 +704,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
     private fun showConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
         val view = layoutInflater.inflate(R.layout.confirmation_dialog, null)
+        val newsCollectionRef = Firebase.firestore.collection("news")
 
         builder.setView(view)
         val dialog = builder.create()
@@ -744,6 +746,27 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 "Poll deleted successfully",
                 Toast.LENGTH_SHORT
             ).show()
+
+            val currentTime = System.currentTimeMillis()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val formattedTime = dateFormat.format(Date(currentTime))
+            val newsTitle = "Deleted Poll"
+            val newsContent = "Poll " + poll.question + " was deleted from " + course.name + " group, by " + studentName
+            val new = hashMapOf(
+                "title" to newsTitle,
+                "content" to newsContent,
+                "time" to formattedTime,
+                "courseId" to course.id
+            )
+            newsCollectionRef.document()
+                .set(new, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d(TAG, "News created successfully")
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error creating news", exception)
+                }
+
             seePolls()
             dialog.dismiss()
         }

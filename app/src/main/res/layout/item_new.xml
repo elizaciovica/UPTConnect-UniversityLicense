@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="15dp"
+        android:backgroundTint="#FFF"
+        android:layout_marginHorizontal="10dp">
+
+    <LinearLayout
+            android:id="@+id/poll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/student"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:background="@color/mine8">
+
+        <TextView
+                android:id="@+id/news_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Poll"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:textAlignment="center"
+                android:layout_marginTop="50dp"
+                android:layout_gravity="center" />
+        <TextView
+                android:id="@+id/news_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="this is a content"
+                android:textSize="15sp"
+                android:backgroundTint="#B8DCE4"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="20dp"/>
+
+        <LinearLayout
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="40dp">
+
+            <TextView
+                    android:id="@+id/created_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Created on "
+                    android:textSize="15sp"
+                    android:backgroundTint="#B8DCE4"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textAlignment="center" />
+
+            <TextView
+                    android:id="@+id/created_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="time"
+                    android:textSize="15sp"
+                    android:textColor="@color/dark_green"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -245,6 +245,29 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
+                    val currentTime = System.currentTimeMillis()
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    val formattedTime = dateFormat.format(Date(currentTime))
+                    val newsTitle = "New Poll"
+                    val newsContent =
+                        "A poll was created in $chosenGroupName group, by ADMIN $studentName"
+                    val new = hashMapOf(
+                        "title" to newsTitle,
+                        "content" to newsContent,
+                        "time" to formattedTime,
+                        "courseId" to chosenGroupId
+                    )
+                    val newsCollectionRef = db.collection("news")
+                    newsCollectionRef.document()
+                        .set(new, SetOptions.merge())
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "News created successfully")
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.d(ContentValues.TAG, "Error creating news", exception)
+                        }
+
                     backHome()
                     finish()
                 }
@@ -285,7 +308,7 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        chosenDay = day
+        chosenDay = dayOfMonth
         chosenYear = year
         chosenMouth = month
         hour = calendar.get(Calendar.HOUR)

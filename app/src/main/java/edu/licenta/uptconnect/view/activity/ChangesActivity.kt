@@ -18,7 +18,7 @@ import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityChangesBinding
 import edu.licenta.uptconnect.model.Course
 
-class ChangesActivity : AppCompatActivity() {
+class ChangesActivity : DrawerLayoutActivity() {
 
     private lateinit var binding: ActivityChangesBinding
 
@@ -35,6 +35,11 @@ class ChangesActivity : AppCompatActivity() {
         setBinding()
         getExtrasFromIntent()
         setProfileDetails()
+        initializeMenu(
+            binding.drawerLayout,
+            binding.navigationView,
+            0
+        )
         createChangeRequest()
         showMatches()
     }
