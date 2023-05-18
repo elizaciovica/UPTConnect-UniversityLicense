@@ -104,5 +104,10 @@ class HomeActivity : DrawerLayoutActivity() {
             intent.putExtra("studentName", studentName)
             startActivity(intent)
         }
+
+        binding.locationsCard.setOnClickListener {
+            val intent = Intent(this, LocationsActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

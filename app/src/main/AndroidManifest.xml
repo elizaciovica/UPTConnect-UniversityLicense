@@ -3,6 +3,12 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <permission
+            android:name="edu.licenta.uptconnect.permission.MAPS_RECEIVE"
+            android:protectionLevel="signature" />
 
     <application
             android:allowBackup="true"
@@ -14,6 +20,20 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.UPTConnect"
             tools:targetApi="31">
+        <activity
+                android:name=".view.activity.BuildingsActivity"
+                android:exported="false">
+            <meta-data
+                    android:name="android.app.lib_name"
+                    android:value="" />
+        </activity>
+        <activity
+                android:name=".view.activity.LocationsActivity"
+                android:exported="false">
+            <meta-data
+                    android:name="android.app.lib_name"
+                    android:value="" />
+        </activity>
         <activity
                 android:name=".view.activity.CreateNewsActivity"
                 android:exported="false">
@@ -171,6 +191,9 @@
         <meta-data
                 android:name="preloaded_fonts"
                 android:resource="@array/preloaded_fonts" />
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="${MAPS_API_KEY}" />
     </application>
 
 </manifest>
