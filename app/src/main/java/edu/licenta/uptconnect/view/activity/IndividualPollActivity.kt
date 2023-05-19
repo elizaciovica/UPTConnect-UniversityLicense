@@ -681,18 +681,20 @@ class IndividualPollActivity : DrawerLayoutActivity() {
         if (poll.createdBy == studentFirebaseId) {
             val buttonDelete = Button(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    500,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     topMargin = 100 // set the margin top
                     leftMargin = 200
                     rightMargin = 200
+                    text = "DELETE POLL"
+                    textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    gravity = Gravity.CENTER_HORIZONTAL
                 }
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                setTextColor(resources.getColor(R.color.black))
+                setBackgroundResource(R.drawable.rounded_corners)
             }
-            val deleteText = "DELETE POLL"
-            buttonDelete.text = deleteText
-            buttonDelete.setTextColor(ContextCompat.getColor(this, R.color.white))
-            buttonDelete.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
             layout.addView(buttonDelete)
 
             buttonDelete.setOnClickListener {
