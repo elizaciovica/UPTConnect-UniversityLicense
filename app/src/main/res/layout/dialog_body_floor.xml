@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_corners">
+
+    <TextView
+            android:id="@+id/name_body_floor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FLOORS"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_marginHorizontal="30dp"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"/>
+
+    <edu.licenta.uptconnect.util.PanningImageView
+            android:id="@+id/body_floor_image"
+            android:layout_width="400dp"
+            android:layout_height="300dp"
+            android:scaleType="matrix" />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_btn"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="147dp"
+            android:layout_height="68dp"
+            android:backgroundTint="@color/grey"
+            android:text="CANCEL"
+            android:textColor="@color/white"
+            android:textFontWeight="300"
+            android:textSize="17dp"
+            android:textStyle="italic"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="30dp"
+            android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>
