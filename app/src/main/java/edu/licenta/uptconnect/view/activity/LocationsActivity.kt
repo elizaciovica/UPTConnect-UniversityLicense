@@ -85,20 +85,27 @@ class LocationsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(automationFaculty, 15F))
     }
 
-    private fun showMarkerDialog(title: String) {
+    private fun showMarkerDialog(marker: Marker) {
         val builder = AlertDialog.Builder(this)
         val view = layoutInflater.inflate(R.layout.dialog_map_marker, null)
 
         builder.setView(view)
         val dialog = builder.create()
+        dialog.window!!.setBackgroundDrawable(resources.getDrawable(R.drawable.rounded_corners))
 
-        view.findViewById<TextView>(R.id.name_marker).text = title
+        if(marker.snippet != null)
+        {
+            view.findViewById<TextView>(R.id.name_marker).text = marker.snippet
+        } else {
+            view.findViewById<TextView>(R.id.name_marker).text = marker.title
+        }
+
         view.findViewById<Button>(R.id.cancel_btn).setOnClickListener {
             dialog.dismiss()
         }
         view.findViewById<Button>(R.id.details_btn).setOnClickListener {
             val intent = Intent(this, BuildingsActivity::class.java)
-            intent.putExtra("name", title)
+            intent.putExtra("name", marker.title)
             startActivity(intent)
         }
 
@@ -106,12 +113,7 @@ class LocationsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnM
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        if(marker.snippet != null)
-        {
-            showMarkerDialog(marker.snippet!!)
-        } else {
-            showMarkerDialog(marker.title!!)
-        }
+        showMarkerDialog(marker)
         return true
     }
 }
