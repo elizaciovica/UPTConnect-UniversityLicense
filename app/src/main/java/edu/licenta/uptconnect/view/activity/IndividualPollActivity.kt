@@ -708,6 +708,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
         builder.setView(view)
         val dialog = builder.create()
+        dialog.window!!.setBackgroundDrawable(resources.getDrawable(R.drawable.rounded_corners))
 
         view.findViewById<Button>(R.id.delete_btn).setOnClickListener {
 
