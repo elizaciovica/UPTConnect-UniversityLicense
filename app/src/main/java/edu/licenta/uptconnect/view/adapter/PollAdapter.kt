@@ -24,7 +24,7 @@ private const val CLICKABLE_VIEW_TYPE = 1
 private const val NON_CLICKABLE_VIEW_TYPE = 2
 
 class PollAdapter(
-    options: FirestoreRecyclerOptions<Poll>,
+    options: FirestoreRecyclerOptions<Poll>
 ) :
     FirestoreRecyclerAdapter<Poll, PollAdapter.PollViewHolder>(
         options

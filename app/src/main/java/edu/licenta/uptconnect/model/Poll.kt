@@ -4,8 +4,10 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import com.google.firebase.firestore.DocumentId
 
 data class Poll(
+    @DocumentId
     val pollId: String,
     val createdBy: String,
     val end_time: String,

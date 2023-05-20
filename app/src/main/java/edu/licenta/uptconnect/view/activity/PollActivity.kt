@@ -80,7 +80,7 @@ class PollActivity : DrawerLayoutActivity() {
                     binding.pollsRecyclerView.adapter = pollAdapter
                     binding.pollsRecyclerView.adapter?.notifyDataSetChanged()
 
-                    pollAdapter!!.startListening()
+                    pollAdapter.startListening()
 
                     binding.progressBar.visibility = View.GONE
                     binding.viewForNoPolls.visibility = View.GONE
