@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.licenta.uptconnect.R
@@ -100,6 +101,12 @@ class PollAdapter(
             NON_CLICKABLE_VIEW_TYPE -> {
                 // Disable click listener for non-clickable items
                 viewHolder.itemView.setOnClickListener(null)
+                val currentUser = Firebase.auth.currentUser!!.uid
+                if(currentUser == dataSet[position].createdBy) {
+                    viewHolder.itemView.setOnClickListener {
+                        onItemClick?.invoke(dataSet[position])
+                    }
+                }
             }
         }
 

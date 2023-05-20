@@ -86,48 +86,50 @@ class GroupsActivity : DrawerLayoutActivity() {
                     coursesRef
                         .get()
                         .addOnSuccessListener { documents ->
-                            if (documents.isEmpty) {
-                                binding.progressBar.visibility = View.GONE
-                                binding.recyclerView.visibility = View.GONE
-                                binding.viewForNoCourses.isVisible = true
-                            } else {
-                                for (document in documents) {
-                                    if (acceptedCourses != null && acceptedCourses.contains(document.id)) {
-                                        val courseId = document.id
-                                        val courseData = document.data
-                                        val name = courseData["Name"] as String
-                                        val section = courseData["Section"] as String
-                                        val year = courseData["Year"] as String
-                                        val mandatory = courseData["Mandatory"] as Boolean
-                                        val examination = courseData["Examination"] as String
-                                        val teachingWay = courseData["Teaching Way"]
-                                        val course = Course(
-                                            courseId,
-                                            name,
-                                            section,
-                                            year,
-                                            mandatory,
-                                            examination,
-                                            teachingWay!!
-                                        )
-                                        coursesList.add(course)
-                                    }
-                                    val adapter = MandatoryCourseAdapter(coursesList)
-                                    binding.recyclerView.adapter = adapter
-                                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                            if (acceptedCourses != null) {
+                                if (documents.isEmpty || acceptedCourses.isEmpty()) {
                                     binding.progressBar.visibility = View.GONE
-                                    binding.viewForNoCourses.visibility = View.GONE
-                                    binding.recyclerView.isVisible = true
+                                    binding.recyclerView.visibility = View.GONE
+                                    binding.viewForNoCourses.isVisible = true
+                                } else {
+                                    for (document in documents) {
+                                        if (acceptedCourses.contains(document.id)) {
+                                            val courseId = document.id
+                                            val courseData = document.data
+                                            val name = courseData["Name"] as String
+                                            val section = courseData["Section"] as String
+                                            val year = courseData["Year"] as String
+                                            val mandatory = courseData["Mandatory"] as Boolean
+                                            val examination = courseData["Examination"] as String
+                                            val teachingWay = courseData["Teaching Way"]
+                                            val course = Course(
+                                                courseId,
+                                                name,
+                                                section,
+                                                year,
+                                                mandatory,
+                                                examination,
+                                                teachingWay!!
+                                            )
+                                            coursesList.add(course)
+                                        }
+                                        val adapter = MandatoryCourseAdapter(coursesList)
+                                        binding.recyclerView.adapter = adapter
+                                        binding.recyclerView.adapter?.notifyDataSetChanged()
+                                        binding.progressBar.visibility = View.GONE
+                                        binding.viewForNoCourses.visibility = View.GONE
+                                        binding.recyclerView.isVisible = true
 
-                                    adapter.onItemClick = {
-                                        val intent =
-                                            Intent(this, IndividualGroupActivity::class.java)
-                                        intent.putExtra("userId", studentFirebaseId)
-                                        intent.putExtra("email", email)
-                                        intent.putExtra("course", it)
-                                        intent.putExtra("imageUrl", imageUrl)
-                                        intent.putExtra("studentName", studentName)
-                                        startActivity(intent)
+                                        adapter.onItemClick = {
+                                            val intent =
+                                                Intent(this, IndividualGroupActivity::class.java)
+                                            intent.putExtra("userId", studentFirebaseId)
+                                            intent.putExtra("email", email)
+                                            intent.putExtra("course", it)
+                                            intent.putExtra("imageUrl", imageUrl)
+                                            intent.putExtra("studentName", studentName)
+                                            startActivity(intent)
+                                        }
                                     }
                                 }
                             }

@@ -59,6 +59,8 @@ class HomeActivity : DrawerLayoutActivity() {
                 //also see if the student is Leader of the Year
                 if(documentSnapshot.get("YearLeader") == true) {
                     binding.specialPoll.visibility = View.VISIBLE
+                } else {
+                    binding.specialPoll.visibility = View.GONE
                 }
             }
             .addOnFailureListener { exception ->
