@@ -7,11 +7,11 @@ import androidx.annotation.RequiresApi
 
 data class Course(
     val id: String,
-    val name: String,
-    val section: String,
-    val year: String,
-    val mandatory: Boolean,
-    val examination: String,
+    val Name: String,
+    val Section: String,
+    val Year: String,
+    val Mandatory: Boolean,
+    val Examination: String,
     val teachingWay: Any
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -31,11 +31,11 @@ data class Course(
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(id)
-        dest.writeString(name)
-        dest.writeString(section)
-        dest.writeString(year)
-        dest.writeBoolean(mandatory)
-        dest.writeString(examination)
+        dest.writeString(Name)
+        dest.writeString(Section)
+        dest.writeString(Year)
+        dest.writeBoolean(Mandatory)
+        dest.writeString(Examination)
         dest.writeValue(teachingWay)
     }
 

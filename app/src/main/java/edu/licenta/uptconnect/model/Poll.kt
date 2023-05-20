@@ -14,6 +14,7 @@ data class Poll(
     val start_time: String,
     val question: String,
     val options: List<String>,
+    @field:JvmField
     val isFromLeader: Boolean,
     val hasResults: Boolean,
     val type: String

@@ -2,7 +2,6 @@ package edu.licenta.uptconnect.view.activity
 
 import android.annotation.SuppressLint
 import android.content.ClipData
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Color
@@ -754,7 +753,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val formattedTime = dateFormat.format(Date(currentTime))
             val newsTitle = "Deleted Poll"
-            val newsContent = "Poll " + poll.question + " was deleted from " + course.name + " group, by " + studentName
+            val newsContent = "Poll " + poll.question + " was deleted from " + course.Name + " group, by " + studentName
             val new = hashMapOf(
                 "title" to newsTitle,
                 "content" to newsContent,

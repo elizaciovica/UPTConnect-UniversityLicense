@@ -29,7 +29,7 @@ class MandatoryCourseAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.courseName.text = dataSet[position].name
+        viewHolder.courseName.text = dataSet[position].Name
         viewHolder.itemView.setOnClickListener() {
             onItemClick?.invoke(dataSet[position])
         }

@@ -90,7 +90,7 @@ class StudentCourseEnrollActivity : DrawerLayoutActivity() {
                                         val year = courseData["Year"] as String
                                         val mandatory = courseData["Mandatory"] as Boolean
                                         val examination = courseData["Examination"] as String
-                                        val teachingWay = courseData["Teaching Way"]
+                                        val teachingWay = courseData["teachingWay"]
                                         val course = CourseEnrollRequest(
                                             courseId,
                                             name,

@@ -177,7 +177,7 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
                 val currentTime = System.currentTimeMillis()
                 val formattedTime = dateFormat.format(Date(currentTime))
                 val newsTitle = "New Poll"
-                val newsContent = "A poll was created in " + course.name + " group, by " + studentName
+                val newsContent = "A poll was created in " + course.Name + " group, by " + studentName
                 val new = hashMapOf(
                     "title" to newsTitle,
                     "content" to newsContent,

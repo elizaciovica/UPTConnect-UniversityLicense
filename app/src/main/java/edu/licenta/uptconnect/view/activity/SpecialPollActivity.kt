@@ -103,7 +103,7 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
             for (document in task.result.documents) {
                 groupMap[document.data!!["Name"].toString()] = document.id
                 coursesMap[document.data!!["Name"].toString()] =
-                    document["Teaching Way"] as List<String>
+                    document["teachingWay"] as List<String>
             }
             return@continueWithTask Tasks.forResult(null)
         }

@@ -182,7 +182,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
         val populateDropDownTask = getCoursesTask.continueWithTask { task ->
             for (document in task.result.documents) {
                 coursesMap[document.data!!["Name"].toString()] =
-                    document["Teaching Way"] as List<String>
+                    document["teachingWay"] as List<String>
                 coursesMapIds[document.data!!["Name"].toString()] = document.id
             }
             return@continueWithTask Tasks.forResult(null)
