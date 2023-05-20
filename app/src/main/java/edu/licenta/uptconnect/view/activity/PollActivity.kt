@@ -5,9 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -22,7 +23,7 @@ class PollActivity : DrawerLayoutActivity() {
     private lateinit var binding: ActivityPollBinding
 
     private lateinit var course: Course
-    private var pollList = mutableListOf<Poll>()
+    private lateinit var pollAdapter: FirestoreRecyclerAdapter<Poll, PollAdapter.PollViewHolder>
 
     private var studentFirebaseId = ""
     private var email = ""
@@ -64,36 +65,28 @@ class PollActivity : DrawerLayoutActivity() {
     private fun seeAvailablePolls() {
         val recyclerView = findViewById<RecyclerView>(R.id.polls_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        val pollsDatabase = Firebase.firestore
-        pollsDatabase.collection("polls").document("courses_polls").collection(course.id)
-            .get().addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    binding.progressBar.visibility = View.GONE
-                    binding.pollsRecyclerView.visibility = View.GONE
-                    binding.viewForNoPolls.isVisible = true
-                } else {
-                    for (document in documents) {
-                        val pollId = document.id
-                        val pollData = document.data
-                        val createdBy = pollData["createdBy"] as String
-                        val endTime = pollData["end_time"] as String
-                        val startTime = pollData["start_time"] as String
-                        val question = pollData["question"] as String
-                        val options = pollData["options"] as List<String>
-                        val isFromLeader = pollData["isFromLeader"] as Boolean
-                        val hasResults = pollData["hasResults"] as Boolean
-                        val type = pollData["type"] as String
-                        val poll = Poll(pollId, createdBy, endTime, startTime, question, options, isFromLeader, hasResults, type)
-                        pollList.add(poll)
-                    }
-                    val adapter = PollAdapter(pollList)
-                    binding.pollsRecyclerView.adapter = adapter
+        val pollQuery =
+            Firebase.firestore.collection("polls")
+                .document("courses_polls")
+                .collection(course.id)
+
+        pollQuery.get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val pollList = FirestoreRecyclerOptions.Builder<Poll>()
+                        .setQuery(pollQuery, Poll::class.java).build()
+
+                    pollAdapter = PollAdapter(pollList)
+                    binding.pollsRecyclerView.adapter = pollAdapter
                     binding.pollsRecyclerView.adapter?.notifyDataSetChanged()
+
+                    pollAdapter!!.startListening()
+
                     binding.progressBar.visibility = View.GONE
                     binding.viewForNoPolls.visibility = View.GONE
-                    binding.pollsRecyclerView.isVisible = true
+                    binding.pollsRecyclerView.visibility = View.VISIBLE
 
-                    adapter.onItemClick = {
+                    (pollAdapter as PollAdapter).onItemClick = {
                         val intent = Intent(this, IndividualPollActivity::class.java)
                         intent.putExtra("userId", studentFirebaseId)
                         intent.putExtra("email", email)
@@ -103,12 +96,25 @@ class PollActivity : DrawerLayoutActivity() {
                         intent.putExtra("studentName", studentName)
                         startActivity(intent)
                     }
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    binding.pollsRecyclerView.visibility = View.GONE
+                    binding.viewForNoPolls.visibility = View.VISIBLE
                 }
+
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error retrieving polls. ", exception)
+                Log.d(ContentValues.TAG, "Error retrieving poll", exception)
             }
     }
+
+    override fun onStop() {
+        super.onStop()
+        if (pollAdapter != null) {
+            pollAdapter!!.stopListening()
+        }
+    }
+
 
     private fun initializeButtons() {
         course = intent.getParcelableExtra("course")!!

@@ -15,7 +15,9 @@ data class Poll(
     val isFromLeader: Boolean,
     val hasResults: Boolean,
     val type: String
-) : Parcelable {
+)  : Parcelable {
+    constructor() : this("", "", "", "", "", emptyList(), false, false, "")
+
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,

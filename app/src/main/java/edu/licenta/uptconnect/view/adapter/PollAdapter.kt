@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,99 +24,116 @@ private const val CLICKABLE_VIEW_TYPE = 1
 private const val NON_CLICKABLE_VIEW_TYPE = 2
 
 class PollAdapter(
-    private val dataSet: List<Poll>
+    options: FirestoreRecyclerOptions<Poll>,
 ) :
-    RecyclerView.Adapter<PollAdapter.ViewHolder>() {
+    FirestoreRecyclerAdapter<Poll, PollAdapter.PollViewHolder>(
+        options
+    ) {
     var onItemClick: ((Poll) -> Unit)? = null
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val context: Context = itemView.context
-        val question: TextView = itemView.findViewById(R.id.question)
-        val student: TextView = itemView.findViewById(R.id.student_who_created)
-        val endDate: TextView = itemView.findViewById(R.id.end_date)
+    inner class PollViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val linearLayout: LinearLayout = itemView.findViewById(R.id.poll)
-        val openUntilTextView: TextView = itemView.findViewById(R.id.open_until)
+        val context: Context = itemView.context
+        val question = itemView.findViewById<TextView>(R.id.question)
+        val student = itemView.findViewById<TextView>(R.id.student_who_created)
+        val endDate = itemView.findViewById<TextView>(R.id.end_date)
+        val openUntilTextView = itemView.findViewById<TextView>(R.id.open_until)
+
+        fun setPollDetails(questionText: String, studentText: String,
+        endDateText: String) {
+            question.text = questionText
+            student.text = studentText
+            endDate.text = endDateText
+        }
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int): PollViewHolder {
         // Create a new view, which defines the UI of the list item
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.item_poll, viewGroup, false)
-        return ViewHolder(view)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_poll, parent, false)
+        return PollViewHolder(view)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        pollViewHolder: PollViewHolder,
+        position: Int,
+        poll: Poll
+    ) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentTime = System.currentTimeMillis()
 
+        pollViewHolder.setPollDetails(poll.question, poll.createdBy, poll.end_time)
+
         val studentDoc =
-            Firebase.firestore.collection("students").document(dataSet[position].createdBy)
+            Firebase.firestore.collection("students").document(poll.createdBy)
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    viewHolder.student.text =
+                    pollViewHolder.student.text =
                         documentSnapshot.getString("FirstName") + " " + documentSnapshot.getString("LastName")
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving Student Name. ", exception)
             }
-        viewHolder.question.text = dataSet[position].question
+        pollViewHolder.question.text = poll.question
 
-        if (dateFormat.format(Date(currentTime)) > dataSet[position].end_time) {
+        if (dateFormat.format(Date(currentTime)) > poll.end_time) {
             var closedText = "CLOSED"
-            viewHolder.openUntilTextView.text = closedText
+            pollViewHolder.openUntilTextView.text = closedText
             var detailsText = "click for more details"
-            viewHolder.endDate.text = detailsText
+            pollViewHolder.endDate.text = detailsText
 
-            viewHolder.linearLayout.setBackgroundColor(
+            pollViewHolder.linearLayout.setBackgroundColor(
                 ContextCompat.getColor(
-                    viewHolder.itemView.context,
+                    pollViewHolder.itemView.context,
                     R.color.grey2
                 )
             )
 
         } else {
-            viewHolder.endDate.text = dataSet[position].end_time
+            pollViewHolder.endDate.text = poll.end_time
         }
 
-        if(dateFormat.format(Date(currentTime)) < dataSet[position].start_time) {
-            viewHolder.linearLayout.setBackgroundColor(
+        if(dateFormat.format(Date(currentTime)) < poll.start_time) {
+            pollViewHolder.linearLayout.setBackgroundColor(
                 ContextCompat.getColor(
-                    viewHolder.itemView.context,
+                    pollViewHolder.itemView.context,
                     R.color.grey2
                 )
             )
 
             var closedText = "OPENS IN "
-            viewHolder.openUntilTextView.text = closedText
-            viewHolder.endDate.text = dataSet[position].start_time
+            pollViewHolder.openUntilTextView.text = closedText
+            pollViewHolder.endDate.text = poll.start_time
         }
 
-        when (viewHolder.itemViewType) {
+        when (pollViewHolder.itemViewType) {
             CLICKABLE_VIEW_TYPE -> {
                 // Set up click listener for clickable items
-                viewHolder.itemView.setOnClickListener {
-                    onItemClick?.invoke(dataSet[position])
+                pollViewHolder.itemView.setOnClickListener {
+                    onItemClick?.invoke(poll) //hmmm
                 }
             }
             NON_CLICKABLE_VIEW_TYPE -> {
                 // Disable click listener for non-clickable items
-                viewHolder.itemView.setOnClickListener(null)
+                pollViewHolder.itemView.setOnClickListener(null)
                 val currentUser = Firebase.auth.currentUser!!.uid
-                if(currentUser == dataSet[position].createdBy) {
-                    viewHolder.itemView.setOnClickListener {
-                        onItemClick?.invoke(dataSet[position])
+                if(currentUser == poll.createdBy) {
+                    pollViewHolder.itemView.setOnClickListener {
+                        onItemClick?.invoke(poll)
                     }
                 }
             }
         }
 
-        if (dataSet[position].isFromLeader) {
-            val textAdmin = viewHolder.itemView.findViewById<TextView>(R.id.admin)
-            viewHolder.linearLayout.setBackgroundColor(
+        if (poll.isFromLeader) {
+            val textAdmin = pollViewHolder.itemView.findViewById<TextView>(R.id.admin)
+            pollViewHolder.linearLayout.setBackgroundColor(
                 ContextCompat.getColor(
-                    viewHolder.itemView.context,
+                    pollViewHolder.itemView.context,
                     R.color.red3
                 )
             )
@@ -122,15 +141,12 @@ class PollAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
-
     override fun getItemViewType(position: Int): Int {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentTime = System.currentTimeMillis()
+        val poll = getItem(position) // Get the Poll object at the specified position
         // Return different view types based on the position of the item
-        return if (dateFormat.format(Date(currentTime)) > dataSet[position].start_time) {
+        return if (dateFormat.format(Date(currentTime)) > poll.start_time) {
             CLICKABLE_VIEW_TYPE
         } else {
             NON_CLICKABLE_VIEW_TYPE
