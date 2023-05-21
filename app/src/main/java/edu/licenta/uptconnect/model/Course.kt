@@ -4,8 +4,10 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import com.google.firebase.firestore.DocumentId
 
 data class Course(
+    @DocumentId
     val id: String,
     val Name: String,
     val Section: String,
@@ -14,6 +16,8 @@ data class Course(
     val Examination: String,
     val teachingWay: Any
 ) : Parcelable {
+    constructor() : this("", "", "", "", false, "", "")
+
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
