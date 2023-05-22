@@ -25,6 +25,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:backgroundTint="#F6F3F3"
                 android:background="@drawable/two_round_corners">
 
             <TextView
@@ -41,6 +42,7 @@
                     android:layout_marginBottom="30dp"
                     android:layout_marginTop="30dp"
                     android:textAlignment="center"
+                    android:gravity="center_horizontal"
                     android:layout_marginHorizontal="30dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -59,7 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
+                        android:backgroundTint="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -78,7 +80,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE" />
+                        android:backgroundTint="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -97,7 +99,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE"
+                        android:backgroundTint="@color/white"
                         android:hint="Faculty"
                         android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -118,7 +120,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE"
+                        android:backgroundTint="@color/white"
                         android:hint="Section"
                         android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -139,7 +141,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_corners"
-                        android:backgroundTint="#FDEEEE"
+                        android:backgroundTint="@color/white"
                         android:hint="Year"
                         android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -154,7 +156,7 @@
                     android:textColor="#647292"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"
-                    android:backgroundTint="#FDEEEE"
+                    android:backgroundTint="@color/white"
                     app:layout_constraintTop_toBottomOf="@id/study_year_id"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

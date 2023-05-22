@@ -154,79 +154,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/calendar_card"
-                        style="?attr/materialCardViewElevatedStyle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_gravity="fill"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp">
 
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                        <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="194dp"
-                                app:srcCompat="@drawable/calendar"
-                                android:scaleType="centerCrop" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Calendar"
-                                android:textSize="25sp"
-                                android:textStyle="bold"
-                                android:layout_gravity="center" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/notes_card"
-                        style="?attr/materialCardViewElevatedStyle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_gravity="fill"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="30dp">
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                        <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="194dp"
-                                app:srcCompat="@drawable/notes2"
-                                android:scaleType="centerCrop" />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Notes"
-                                android:textSize="26sp"
-                                android:textStyle="bold"
-                                android:layout_gravity="center" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                         android:id="@+id/locations_card"
@@ -241,7 +169,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="40dp">
+                        android:layout_marginBottom="400dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
@@ -279,7 +207,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="30dp"
-                        android:layout_marginBottom="40dp">
+                        android:layout_marginBottom="400dp">
 
                     <LinearLayout
                             android:layout_width="match_parent"
