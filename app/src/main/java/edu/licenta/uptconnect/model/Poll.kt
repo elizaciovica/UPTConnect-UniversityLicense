@@ -4,18 +4,23 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import com.google.firebase.firestore.DocumentId
 
 data class Poll(
+    @DocumentId
     val pollId: String,
     val createdBy: String,
     val end_time: String,
     val start_time: String,
     val question: String,
     val options: List<String>,
+    @field:JvmField
     val isFromLeader: Boolean,
     val hasResults: Boolean,
     val type: String
-) : Parcelable {
+)  : Parcelable {
+    constructor() : this("", "", "", "", "", emptyList(), false, false, "")
+
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,

@@ -29,16 +29,15 @@
     <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_btn"
             style="?attr/borderlessButtonStyle"
-            android:layout_width="137dp"
-            android:layout_height="48dp"
+            android:layout_width="147dp"
+            android:layout_height="68dp"
             android:backgroundTint="@color/grey"
             android:text="CANCEL"
-            android:textColor="@color/black"
-            android:textFontWeight="300"
-            android:textSize="18dp"
-            android:textStyle="italic"
+            android:textColor="@color/white"
+            android:textSize="17dp"
             android:layout_marginTop="20dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            app:cornerRadius="30dp"
+            android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
-import edu.licenta.uptconnect.R
 import edu.licenta.uptconnect.databinding.ActivityNewsBinding
 import edu.licenta.uptconnect.model.New
 import edu.licenta.uptconnect.view.adapter.NewsAdapter
@@ -87,26 +86,48 @@ class NewsActivity : DrawerLayoutActivity() {
             } else {
                 isLeader = task.get("YearLeader") as Boolean
             }
-            binding.viewForNoNews.visibility = View.GONE
-            binding.progressBar.visibility = View.GONE
-            binding.newsRecyclerView.visibility = View.VISIBLE
 
-            val recyclerView = findViewById<RecyclerView>(R.id.news_recycler_view)
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            val linearLayoutManager = LinearLayoutManager(this)
-            binding.newsRecyclerView.layoutManager = linearLayoutManager
+            if (courses.isNotEmpty()) {
+                binding.viewForNoNews.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
+                binding.newsRecyclerView.visibility = View.VISIBLE
 
-            val newsQuery =
-                Firebase.firestore.collection("news")
-                    .whereIn("courseId", courses.toList())
-            val allNews = FirestoreRecyclerOptions.Builder<New>()
-                .setQuery(newsQuery, New::class.java).build()
+                val linearLayoutManager = LinearLayoutManager(this)
+                binding.newsRecyclerView.layoutManager = linearLayoutManager
 
-            newsAdapter = NewsAdapter(allNews)
-            binding.newsRecyclerView.adapter = newsAdapter
-            binding.newsRecyclerView.adapter?.notifyDataSetChanged()
+                val newsQuery =
+                    Firebase.firestore.collection("news")
+                        .orderBy("time", Query.Direction.DESCENDING)
+                        .whereIn("courseId", courses.toList())
 
-            newsAdapter!!.startListening()
+                newsQuery.get().addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        val allNews = FirestoreRecyclerOptions.Builder<New>()
+                            .setQuery(newsQuery, New::class.java).build()
+
+                        newsAdapter = NewsAdapter(allNews)
+                        binding.newsRecyclerView.adapter = newsAdapter
+                        binding.newsRecyclerView.adapter?.notifyDataSetChanged()
+
+                        newsAdapter!!.startListening()
+                    } else {
+                        binding.viewForNoNews.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.GONE
+                        binding.newsRecyclerView.visibility = View.GONE
+                    }
+
+                }
+                    .addOnFailureListener { exception ->
+                        Log.d(ContentValues.TAG, "Error retrieving news", exception)
+
+                    }
+
+            } else {
+                binding.viewForNoNews.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+                binding.newsRecyclerView.visibility = View.GONE
+            }
+
         }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error retrieving student details", exception)

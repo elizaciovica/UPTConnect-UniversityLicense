@@ -65,7 +65,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/material_card"
                     android:background="@drawable/toolbar"
                     app:layout_constraintHorizontal_bias="0.466"
-                    app:layout_constraintVertical_bias="0.16" />
+                    app:layout_constraintVertical_bias="0.16"/>
 
             <LinearLayout
                     android:id="@+id/material_card"
@@ -75,6 +75,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:orientation="vertical"
+                    android:backgroundTint="#F6F3F3"
                     android:background="@drawable/two_round_corners">
 
                 <LinearLayout
@@ -86,15 +87,13 @@
                     <TextView
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
-                            android:text="Your courses"
+                            android:text="YOUR COURSES"
                             android:textSize="30sp"
                             android:textColor="#647292"
                             android:textStyle="bold"
                             android:fontFamily="sans-serif-condensed"
                             android:layout_marginTop="20dp"
                             android:gravity="center"
-                            android:background="@drawable/almostround"
-                            android:backgroundTint="#B8DCE4"
                             android:layout_marginHorizontal="40dp"
                             android:layout_gravity="center_horizontal" />
 
@@ -150,10 +149,10 @@
 
                     <com.google.android.material.button.MaterialButton
                             android:id="@+id/enroll_button"
-                            android:layout_width="300dp"
+                            android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             app:cornerRadius="50dp"
-                            android:text="Enroll to other courses"
+                            android:text="ENROLL"
                             android:textSize="20sp"
                             android:textColor="#647292"
                             android:textStyle="bold"
@@ -162,7 +161,7 @@
                             android:layout_gravity="center"
                             android:layout_marginHorizontal="30dp"
                             android:layout_marginTop="40dp"
-                            android:layout_marginBottom="100dp" />
+                            android:layout_marginBottom="400dp" />
 
                 </LinearLayout>
 

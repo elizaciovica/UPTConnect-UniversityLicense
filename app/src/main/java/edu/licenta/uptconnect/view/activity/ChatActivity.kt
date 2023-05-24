@@ -36,7 +36,7 @@ class ChatActivity : AppCompatActivity() {
         receiver = course.id
         readMessage(currentStudentFirebaseId!!, receiver)
 
-        binding.chatName.text = course.name
+        binding.chatName.text = course.Name
     }
 
     private fun setBinding() {

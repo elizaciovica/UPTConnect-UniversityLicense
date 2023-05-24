@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".view.activity.ChangesActivity">
+        tools:context=".view.activity.MaterialsActivity">
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -33,7 +33,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
+                    app:layout_constraintBottom_toTopOf="@+id/materials_content"
                     android:src="@drawable/user"
                     app:civ_border_width="2dp"
                     app:civ_border_color="#FF000000"
@@ -49,7 +49,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/profile_image"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
+                    app:layout_constraintBottom_toTopOf="@+id/materials_content"
                     android:text="Student Name"
                     android:textStyle="bold"
                     android:textSize="20sp"
@@ -63,13 +63,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/username_id"
-                    app:layout_constraintBottom_toTopOf="@+id/poll_content"
+                    app:layout_constraintBottom_toTopOf="@+id/materials_content"
                     android:background="@drawable/toolbar"
                     app:layout_constraintHorizontal_bias="0.466"
                     app:layout_constraintVertical_bias="0.16" />
 
             <LinearLayout
-                    android:id="@+id/poll_content"
+                    android:id="@+id/materials_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -79,106 +79,122 @@
                     android:backgroundTint="#F6F3F3"
                     android:background="@drawable/two_round_corners">
 
+            <LinearLayout
+                    android:id="@+id/see_materials"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="40dp">
+
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/images_button"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
+                        app:cornerRadius="50dp"
+                        android:text="Images"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"
+                        android:backgroundTint="#B8DCE4"
+                        android:layout_marginHorizontal="90dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_gravity="center" />
+
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/documents_button"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
+                        app:cornerRadius="50dp"
+                        android:text="Documents"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"
+                        android:backgroundTint="#B8DCE4"
+                        android:layout_marginHorizontal="90dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center"/>
+            </LinearLayout>
+
                 <LinearLayout
+                        android:id="@+id/upload_material_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="20dp">
+                        android:orientation="vertical"
+                        android:layout_marginTop="30dp">
 
                     <TextView
-                            android:id="@+id/text_changes"
-                            android:layout_width="match_parent"
+                            android:layout_width="300dp"
                             android:layout_height="wrap_content"
+                            android:text="Upload Document"
                             android:textSize="30sp"
                             android:textColor="#647292"
                             android:textStyle="bold"
                             android:fontFamily="sans-serif-condensed"
-                            android:layout_marginTop="20dp"
-                            android:gravity="center"/>
-
-                    <TextView
-                            android:id="@+id/course_type_text"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:textSize="25sp"
-                            android:textStyle="bold"
-                            android:textColor="#647292"
-                            android:layout_marginTop="20dp"
-                            android:gravity="start" />
-
-                </LinearLayout>
+                            android:layout_marginTop="40dp"
+                            android:gravity="center"
+                            android:layout_marginHorizontal="40dp"
+                            android:layout_gravity="center_horizontal" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="210dp"
+                        android:id="@+id/document_name_input"
+                        android:layout_width="350dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/last_name_id"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginHorizontal="62dp"
-                        android:layout_gravity="center"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                        android:background="@drawable/rounded_corners"
+                        android:layout_marginTop="20dp"
+                        android:hint="Document Name"
+                        android:layout_gravity="center_horizontal">
 
-                    <AutoCompleteTextView
-                            android:id="@+id/auto_complete_actual_hour"
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/document_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/almostround"
-                            android:backgroundTint="@color/mine8"
-                            android:hint="Your lab hour"
-                            android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="210dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/last_name_id"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginHorizontal="62dp"
-                        android:layout_gravity="center"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                    <AutoCompleteTextView
-                            android:id="@+id/auto_complete_wanted_hour"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/almostround"
-                            android:backgroundTint="@color/mine8"
-                            android:hint="Lab hour you want"
-                            android:inputType="none" />
+                            android:background="@drawable/rounded_corners"
+                            android:backgroundTint="@color/white" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                        android:id="@+id/create_changes_request"
-                        android:layout_width="243dp"
-                        android:layout_height="70dp"
+                        android:id="@+id/image_upload"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
                         app:cornerRadius="50dp"
-                        android:text="Send Request"
-                        android:textSize="25dp"
+                        android:text="Upload Image"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:backgroundTint="#B8DCE4"
                         android:layout_marginHorizontal="90dp"
-                        android:layout_marginTop="25dp"
+                        android:layout_marginTop="40dp"
                         android:layout_gravity="center" />
 
                 <com.google.android.material.button.MaterialButton
-                        android:id="@+id/see_matches"
-                        android:layout_width="243dp"
-                        android:layout_height="70dp"
+                        android:id="@+id/pdf_upload"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
                         app:cornerRadius="50dp"
-                        android:text="See matches"
-                        android:textSize="25dp"
+                        android:text="Upload PDF"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:backgroundTint="#B8DCE4"
                         android:layout_marginHorizontal="90dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="60dp"
-                        android:layout_marginBottom="400dp" />
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center" />
 
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/docx_upload"
+                        android:layout_width="204dp"
+                        android:layout_height="73dp"
+                        app:cornerRadius="50dp"
+                        android:text="Upload DOCX"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-condensed"
+                        android:backgroundTint="#B8DCE4"
+                        android:layout_marginHorizontal="90dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="400dp"/>
+                </LinearLayout>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
