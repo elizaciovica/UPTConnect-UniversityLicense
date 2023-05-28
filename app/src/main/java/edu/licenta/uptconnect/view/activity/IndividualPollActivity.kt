@@ -449,7 +449,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     topMargin = 100 // set the margin top
-                    leftMargin = 500
+                    leftMargin = 100
                 }
                 text = option
                 id = View.generateViewId() // generate a unique ID for each radio button

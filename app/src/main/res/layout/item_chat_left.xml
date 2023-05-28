@@ -9,7 +9,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Student Name"
-            android:layout_marginStart="5dp"></TextView>
+            android:layout_marginStart="5dp"/>
 
     <TextView
             android:id="@+id/show_message"
@@ -19,16 +19,16 @@
             android:layout_marginStart="5dp"
             android:text="Hello World"
             android:textSize="17sp"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:padding="8dp"
-            android:layout_marginTop="20dp" />
+            android:layout_below="@id/sender_student"/>
 
     <TextView
             android:id="@+id/timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="timestamp"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="60dp"></TextView>
+            android:layout_below="@id/show_message"
+            android:layout_marginStart="6dp"/>
 
 </RelativeLayout>

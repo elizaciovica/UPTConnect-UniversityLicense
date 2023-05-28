@@ -251,12 +251,13 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
                     val formattedTime = dateFormat.format(Date(currentTime))
                     val newsTitle = "New Poll"
                     val newsContent =
-                        "A poll was created in $chosenGroupName group, by ADMIN $studentName"
+                        "A new poll has been created by ADMIN"
                     val new = hashMapOf(
                         "title" to newsTitle,
                         "content" to newsContent,
                         "time" to formattedTime,
-                        "courseId" to chosenGroupId
+                        "courseId" to chosenGroupId,
+                        "createdBy" to studentName
                     )
                     val newsCollectionRef = db.collection("news")
                     newsCollectionRef.document()

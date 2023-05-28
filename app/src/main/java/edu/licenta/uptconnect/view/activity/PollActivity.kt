@@ -23,7 +23,7 @@ class PollActivity : DrawerLayoutActivity() {
     private lateinit var binding: ActivityPollBinding
 
     private lateinit var course: Course
-    private lateinit var pollAdapter: FirestoreRecyclerAdapter<Poll, PollAdapter.PollViewHolder>
+    private var pollAdapter: FirestoreRecyclerAdapter<Poll, PollAdapter.PollViewHolder>? = null
 
     private var studentFirebaseId = ""
     private var email = ""
@@ -80,7 +80,7 @@ class PollActivity : DrawerLayoutActivity() {
                     binding.pollsRecyclerView.adapter = pollAdapter
                     binding.pollsRecyclerView.adapter?.notifyDataSetChanged()
 
-                    pollAdapter.startListening()
+                    pollAdapter!!.startListening()
 
                     binding.progressBar.visibility = View.GONE
                     binding.viewForNoPolls.visibility = View.GONE

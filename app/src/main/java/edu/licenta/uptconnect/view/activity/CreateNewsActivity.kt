@@ -137,7 +137,8 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                     "title" to "$title in $chosenGroupName",
                     "content" to content,
                     "time" to formattedTime,
-                    "courseId" to chosenGroupId
+                    "courseId" to chosenGroupId,
+                    "createdBy" to studentName
                 )
 
                 Firebase.firestore.collection("news")
