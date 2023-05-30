@@ -237,7 +237,6 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
             task.addOnSuccessListener { finalListOfPollChoices ->
 
-                //todo change the hardcoded type
                 val scheduleHoursTask =
                     coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, poll.type)
                 scheduleHoursTask.addOnSuccessListener { scheduleHours ->
