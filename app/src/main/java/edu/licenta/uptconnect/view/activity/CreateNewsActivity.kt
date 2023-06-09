@@ -66,7 +66,6 @@ class CreateNewsActivity : DrawerLayoutActivity() {
         val array = intent.getStringArrayExtra("coursesIds")
         val groupMap = HashMap<String, String>()
         var chosenGroupId = ""
-        var chosenGroupName = ""
         val isLeader = intent.getBooleanExtra("isLeader", false)
 
         runBlocking {
@@ -92,7 +91,6 @@ class CreateNewsActivity : DrawerLayoutActivity() {
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val groupSelected = adapterView.getItemAtPosition(i)
                 chosenGroupId = groupMap[groupSelected.toString()].toString()
-                chosenGroupName = groupSelected.toString()
             }
 
 
@@ -118,7 +116,6 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                     AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                         val groupSelected = adapterView.getItemAtPosition(i)
                         chosenGroupId = groupMap[groupSelected.toString()].toString()
-                        chosenGroupName = groupSelected.toString()
                     }
             }
         }
@@ -134,7 +131,7 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val formattedTime = dateFormat.format(Date(currentTime))
                 val new = hashMapOf(
-                    "title" to "$title in $chosenGroupName",
+                    "title" to "$title",
                     "content" to content,
                     "time" to formattedTime,
                     "courseId" to chosenGroupId,

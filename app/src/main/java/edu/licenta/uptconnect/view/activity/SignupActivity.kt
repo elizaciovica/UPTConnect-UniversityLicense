@@ -31,12 +31,12 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun initializeButtons() {
-        binding.loginButton.setOnClickListener() {
+        binding.loginButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
-        binding.signupButton.setOnClickListener() {
+        binding.signupButton.setOnClickListener {
             registerAction()
         }
     }

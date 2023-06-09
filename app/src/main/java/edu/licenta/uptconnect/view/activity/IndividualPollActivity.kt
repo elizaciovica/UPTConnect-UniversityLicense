@@ -572,7 +572,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = 500
+                    topMargin = 100
                     leftMargin = 70
                     rightMargin = 70
                     bottomMargin = 50
@@ -619,7 +619,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     leftMargin = 70
                     rightMargin = 70
                     bottomMargin = 50
-                    topMargin = 300
+                    topMargin = 100
+                    gravity = Gravity.CENTER_HORIZONTAL
                 }
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)

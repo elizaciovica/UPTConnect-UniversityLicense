@@ -49,6 +49,7 @@ class AdminEnrollRequestsActivity : DrawerLayoutActivity() {
 
     private fun seeAllRequests() {
         section = intent.getStringExtra("section").toString()
+        binding.textEnroll.text = section
         val requestsDatabase = Firebase.firestore
         val requestsDocQuery =
             requestsDatabase.collection("courseEnrollRequests").document("sections")
