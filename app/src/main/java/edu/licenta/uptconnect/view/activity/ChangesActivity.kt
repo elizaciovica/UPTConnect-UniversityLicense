@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -96,7 +95,7 @@ class ChangesActivity : DrawerLayoutActivity() {
                     val autoCompleteActualHour: AutoCompleteTextView =
                         binding.autoCompleteActualHour
                     val adapterActualHour =
-                        ArrayAdapter(this, R.layout.facultieslist_item, schedules)
+                        ArrayAdapter(this, R.layout.dropdown_item, schedules)
                     autoCompleteActualHour.setAdapter(adapterActualHour)
                     autoCompleteActualHour.onItemClickListener =
                         AdapterView.OnItemClickListener { adapterView, _, i, _ ->

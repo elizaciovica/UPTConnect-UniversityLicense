@@ -240,7 +240,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                 val scheduleHoursTask =
                     coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, poll.type)
                 scheduleHoursTask.addOnSuccessListener { scheduleHours ->
-                    val results = coursePlacesAssignmentUtil.pollResultsAlgorithm(
+                    val results = coursePlacesAssignmentUtil.executePollResultsAlgorithm(
                         finalListOfPollChoices,
                         scheduleHours
                     )

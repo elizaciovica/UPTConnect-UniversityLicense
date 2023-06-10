@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.ktx.firestore
@@ -157,7 +156,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
         val startHoursList = listOf("8", "10", "12", "14", "16", "18")
         val endHoursList = listOf("10", "12", "14", "16", "18", "20")
         val autoCompleteStart: AutoCompleteTextView = autoCompleteTextViewStart
-        val adapterStart = ArrayAdapter(this, R.layout.facultieslist_item, startHoursList)
+        val adapterStart = ArrayAdapter(this, R.layout.dropdown_item, startHoursList)
         autoCompleteStart.setAdapter(adapterStart)
         autoCompleteStart.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
@@ -165,7 +164,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
             }
 
         val autoCompleteEnd: AutoCompleteTextView = autoCompleteTextViewEnd
-        val adapterEnd = ArrayAdapter(this, R.layout.facultieslist_item, endHoursList)
+        val adapterEnd = ArrayAdapter(this, R.layout.dropdown_item, endHoursList)
         autoCompleteEnd.setAdapter(adapterEnd)
         autoCompleteEnd.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
@@ -192,7 +191,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
 
             val courseList = ArrayList(coursesMap.keys)
             val autoCompleteCourse: AutoCompleteTextView = binding.autoCompleteCourse
-            val adapterCourse = ArrayAdapter(this, R.layout.facultieslist_item, courseList)
+            val adapterCourse = ArrayAdapter(this, R.layout.dropdown_item, courseList)
 
             autoCompleteCourse.setAdapter(adapterCourse)
             autoCompleteCourse.onItemClickListener =
@@ -205,7 +204,7 @@ class CreateScheduleAdminActivity : DrawerLayoutActivity() {
                     val autoCompleteCourseType: AutoCompleteTextView =
                         binding.autoCompleteCourseType
                     val adapterType =
-                        ArrayAdapter(this, R.layout.facultieslist_item, chosenCourseTypes)
+                        ArrayAdapter(this, R.layout.dropdown_item, chosenCourseTypes)
 
                     autoCompleteCourseType.setAdapter(adapterType)
                     autoCompleteCourseType.onItemClickListener =

@@ -85,14 +85,13 @@ class CreateNewsActivity : DrawerLayoutActivity() {
 
         val groupList = ArrayList(groupMap.keys)
         val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
-        val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
+        val adapterGroup = ArrayAdapter(this, R.layout.dropdown_item, groupList)
         autoCompleteGroup.setAdapter(adapterGroup)
         autoCompleteGroup.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val groupSelected = adapterView.getItemAtPosition(i)
                 chosenGroupId = groupMap[groupSelected.toString()].toString()
             }
-
 
         if (isLeader) {
             val getGroupsTask = Firebase.firestore.collection("courses")
@@ -109,7 +108,7 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                 val groupListLeader = ArrayList(groupMap.keys)
                 val autoCompleteGroupLeader: AutoCompleteTextView = binding.autoCompleteGroup
                 val adapterGroupLeader =
-                    ArrayAdapter(this, R.layout.facultieslist_item, groupListLeader)
+                    ArrayAdapter(this, R.layout.dropdown_item, groupListLeader)
 
                 autoCompleteGroupLeader.setAdapter(adapterGroupLeader)
                 autoCompleteGroupLeader.onItemClickListener =

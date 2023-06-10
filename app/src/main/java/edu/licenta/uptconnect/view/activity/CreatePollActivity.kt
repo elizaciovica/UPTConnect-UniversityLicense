@@ -213,7 +213,7 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
     private fun setPollDurationDropDown() {
         val facultyLists = listOf("1", "2", "3", "7")
         val autoComplete: AutoCompleteTextView = binding.autoCompletePollDuration
-        val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
