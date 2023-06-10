@@ -15,7 +15,7 @@
                 android:layout_height="wrap_content"
                 android:text="Student Name"
                 android:layout_marginEnd="5dp"
-                android:layout_alignParentEnd="true"></TextView>
+                android:layout_alignParentEnd="true"/>
 
         <TextView
                 android:id="@+id/show_message"
@@ -27,8 +27,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="5dp"
                 android:textSize="17sp"
-                android:textColor="#FFF"
-                android:layout_marginTop="20dp" />
+                android:layout_below="@id/sender_student"
+                android:textColor="#FFF" />
 
         <TextView
                 android:id="@+id/timestamp"
@@ -37,7 +37,7 @@
                 android:text="timestamp"
                 android:layout_marginEnd="5dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="60dp"></TextView>
+                android:layout_below="@id/show_message"/>
 
     </RelativeLayout>
 

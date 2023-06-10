@@ -1,6 +1,8 @@
 package edu.licenta.uptconnect.view.activity
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -68,13 +70,14 @@ class ChatActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val formattedTime = dateFormat.format(Date(currentTime))
 
-        val hashMap: HashMap<String, String> = HashMap()
-        hashMap["sender"] = sender
-        hashMap["receiver"] = receiver
-        hashMap["message"] = message
-        hashMap["timestamp"] = formattedTime
+        val chatMessage = hashMapOf(
+            "sender" to sender,
+            "receiver" to receiver,
+            "message" to message,
+            "timestamp" to formattedTime
+        )
 
-        reference.child("Chats").push().setValue(hashMap)
+        reference.child("Chats").push().setValue(chatMessage)
     }
 
     private fun readMessage(senderId: String, receiverId: String) {
@@ -83,7 +86,7 @@ class ChatActivity : AppCompatActivity() {
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.d(ContentValues.TAG, "Error: $error")
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {

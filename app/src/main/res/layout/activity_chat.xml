@@ -2,26 +2,15 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#F6F3F3">
 
     <LinearLayout
             android:id="@+id/l1"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="vertical"
-            android:background="#E8DADA">
-
-        <TextView
-                android:id="@+id/private_chat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="PRIVATE CHAT"
-                android:textSize="30sp"
-                android:textColor="#647292"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="10dp" />
+            android:background="#F6F3F3">
 
         <TextView
                 android:id="@+id/chat_name"
@@ -31,27 +20,38 @@
                 android:textColor="#647292"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-condensed"
-                android:textSize="20sp"
-                android:layout_marginTop="5dp"
+                android:textSize="25sp"
+                android:layout_marginTop="30dp"
                 android:layout_marginLeft="40dp"
-                android:layout_gravity="end"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="10dp" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chatRecyclerView"
-            android:layout_below="@id/l1"
+    <LinearLayout
+            android:id="@+id/chat"
             android:layout_width="match_parent"
             android:layout_height="800dp"
-            android:background="@drawable/chat_background" />
+            android:orientation="vertical"
+            android:backgroundTint="@color/white"
+            android:layout_below="@id/l1"
+            android:background="@drawable/two_round_corners">
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#F6F3F3"/>
+
+    </LinearLayout>
 
     <RelativeLayout
             android:id="@+id/r1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_alignBottom="@+id/chatRecyclerView"
-            android:background="#D8EAE7">
+            android:layout_alignBottom="@+id/chat"
+            android:background="@color/grey2">
 
         <LinearLayout
                 android:layout_width="match_parent"

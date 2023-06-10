@@ -66,7 +66,6 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
                     android:textAlignment="center" />
 
             <TextView
@@ -78,8 +77,79 @@
                     android:textColor="@color/dark_green"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-condensed"
-                    android:layout_marginBottom="20dp"
                     android:layout_marginTop="20dp"
+                    android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="40dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="by "
+                    android:textSize="15sp"
+                    android:backgroundTint="#B8DCE4"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center" />
+
+            <TextView
+                    android:id="@+id/student_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="student"
+                    android:textSize="15sp"
+                    android:textColor="@color/dark_green"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/course"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="40dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="in "
+                    android:textSize="15sp"
+                    android:backgroundTint="#B8DCE4"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textAlignment="center" />
+
+            <TextView
+                    android:id="@+id/course_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="course"
+                    android:textSize="15sp"
+                    android:textColor="@color/dark_green"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="10dp"
                     android:textAlignment="center" />
 
         </LinearLayout>

@@ -44,7 +44,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun setDropDowns() {
         val facultyLists = listOf("AC", "")
         val autoComplete: AutoCompleteTextView = binding.autoComplete
-        val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
@@ -53,7 +53,7 @@ class ProfileActivity : AppCompatActivity() {
                 binding.autoCompleteSection.setAdapter(
                     ArrayAdapter<String>(
                         this,
-                        R.layout.facultieslist_item,
+                        R.layout.dropdown_item,
                         emptyList()
                     )
                 )
@@ -61,7 +61,7 @@ class ProfileActivity : AppCompatActivity() {
                 binding.autoCompleteYear.setAdapter(
                     ArrayAdapter<String>(
                         this,
-                        R.layout.facultieslist_item,
+                        R.layout.dropdown_item,
                         emptyList()
                     )
                 )
@@ -75,7 +75,7 @@ class ProfileActivity : AppCompatActivity() {
         val sectionListsForAC = listOf("CTI", "CTI-EN", "IS", "Informatics")
         if (chosenFaculty == "AC") {
             val autoComplete2: AutoCompleteTextView = binding.autoCompleteSection
-            val adapter2 = ArrayAdapter(this, R.layout.facultieslist_item, sectionListsForAC)
+            val adapter2 = ArrayAdapter(this, R.layout.dropdown_item, sectionListsForAC)
             autoComplete2.setAdapter(adapter2)
             autoComplete2.onItemClickListener =
                 AdapterView.OnItemClickListener { adapterView, _, i, _ ->
@@ -84,7 +84,7 @@ class ProfileActivity : AppCompatActivity() {
                     binding.autoCompleteYear.setAdapter(
                         ArrayAdapter<String>(
                             this,
-                            R.layout.facultieslist_item,
+                            R.layout.dropdown_item,
                             emptyList()
                         )
                     )
@@ -100,7 +100,7 @@ class ProfileActivity : AppCompatActivity() {
         if (chosenSection == "Informatics") {
             val autoComplete3: AutoCompleteTextView = binding.autoCompleteYear
             val adapter3 =
-                ArrayAdapter(this, R.layout.facultieslist_item, sectionListForInformatics)
+                ArrayAdapter(this, R.layout.dropdown_item, sectionListForInformatics)
             autoComplete3.setAdapter(adapter3)
             autoComplete3.onItemClickListener =
                 AdapterView.OnItemClickListener { adapterView, _, i, _ ->
@@ -109,7 +109,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
         } else {
             val autoComplete3: AutoCompleteTextView = binding.autoCompleteYear
-            val adapter3 = ArrayAdapter(this, R.layout.facultieslist_item, sectionList)
+            val adapter3 = ArrayAdapter(this, R.layout.dropdown_item, sectionList)
             autoComplete3.setAdapter(adapter3)
             autoComplete3.onItemClickListener =
                 AdapterView.OnItemClickListener { adapterView, _, i, _ ->

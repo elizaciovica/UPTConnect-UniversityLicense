@@ -94,7 +94,7 @@ class CoursePlacesAssignmentUtil {
 
     //labHours will contain lab hour and no of available places for students
     //the function will return a HashMap<String, List<String>>
-    fun pollResultsAlgorithm(
+    fun executePollResultsAlgorithm(
         pollChoices: MutableList<PollChoice>,
         schedules: MutableList<ScheduleData>
     ): HashMap<ScheduleData, MutableList<String>> {

@@ -66,7 +66,6 @@ class CreateNewsActivity : DrawerLayoutActivity() {
         val array = intent.getStringArrayExtra("coursesIds")
         val groupMap = HashMap<String, String>()
         var chosenGroupId = ""
-        var chosenGroupName = ""
         val isLeader = intent.getBooleanExtra("isLeader", false)
 
         runBlocking {
@@ -86,15 +85,13 @@ class CreateNewsActivity : DrawerLayoutActivity() {
 
         val groupList = ArrayList(groupMap.keys)
         val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
-        val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
+        val adapterGroup = ArrayAdapter(this, R.layout.dropdown_item, groupList)
         autoCompleteGroup.setAdapter(adapterGroup)
         autoCompleteGroup.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                 val groupSelected = adapterView.getItemAtPosition(i)
                 chosenGroupId = groupMap[groupSelected.toString()].toString()
-                chosenGroupName = groupSelected.toString()
             }
-
 
         if (isLeader) {
             val getGroupsTask = Firebase.firestore.collection("courses")
@@ -111,14 +108,13 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                 val groupListLeader = ArrayList(groupMap.keys)
                 val autoCompleteGroupLeader: AutoCompleteTextView = binding.autoCompleteGroup
                 val adapterGroupLeader =
-                    ArrayAdapter(this, R.layout.facultieslist_item, groupListLeader)
+                    ArrayAdapter(this, R.layout.dropdown_item, groupListLeader)
 
                 autoCompleteGroupLeader.setAdapter(adapterGroupLeader)
                 autoCompleteGroupLeader.onItemClickListener =
                     AdapterView.OnItemClickListener { adapterView, _, i, _ ->
                         val groupSelected = adapterView.getItemAtPosition(i)
                         chosenGroupId = groupMap[groupSelected.toString()].toString()
-                        chosenGroupName = groupSelected.toString()
                     }
             }
         }
@@ -134,10 +130,11 @@ class CreateNewsActivity : DrawerLayoutActivity() {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val formattedTime = dateFormat.format(Date(currentTime))
                 val new = hashMapOf(
-                    "title" to "$title in $chosenGroupName",
+                    "title" to "$title",
                     "content" to content,
                     "time" to formattedTime,
-                    "courseId" to chosenGroupId
+                    "courseId" to chosenGroupId,
+                    "createdBy" to studentName
                 )
 
                 Firebase.firestore.collection("news")

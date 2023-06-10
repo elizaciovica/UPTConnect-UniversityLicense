@@ -177,12 +177,13 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
                 val currentTime = System.currentTimeMillis()
                 val formattedTime = dateFormat.format(Date(currentTime))
                 val newsTitle = "New Poll"
-                val newsContent = "A poll was created in " + course.Name + " group, by " + studentName
+                val newsContent = "A new poll has been created"
                 val new = hashMapOf(
                     "title" to newsTitle,
                     "content" to newsContent,
                     "time" to formattedTime,
-                    "courseId" to course.id
+                    "courseId" to course.id,
+                    "createdBy" to studentName
                 )
                 newsCollectionRef.document()
                     .set(new, SetOptions.merge())
@@ -212,7 +213,7 @@ class CreatePollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLis
     private fun setPollDurationDropDown() {
         val facultyLists = listOf("1", "2", "3", "7")
         val autoComplete: AutoCompleteTextView = binding.autoCompletePollDuration
-        val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->

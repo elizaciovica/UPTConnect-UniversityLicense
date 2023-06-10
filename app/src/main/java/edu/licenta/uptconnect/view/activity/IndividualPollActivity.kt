@@ -237,11 +237,10 @@ class IndividualPollActivity : DrawerLayoutActivity() {
 
             task.addOnSuccessListener { finalListOfPollChoices ->
 
-                //todo change the hardcoded type
                 val scheduleHoursTask =
                     coursePlacesAssignmentUtil.getLabHoursFromTheSchedule(course.id, poll.type)
                 scheduleHoursTask.addOnSuccessListener { scheduleHours ->
-                    val results = coursePlacesAssignmentUtil.pollResultsAlgorithm(
+                    val results = coursePlacesAssignmentUtil.executePollResultsAlgorithm(
                         finalListOfPollChoices,
                         scheduleHours
                     )
@@ -449,7 +448,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     topMargin = 100 // set the margin top
-                    leftMargin = 500
+                    leftMargin = 100
                 }
                 text = option
                 id = View.generateViewId() // generate a unique ID for each radio button
@@ -573,7 +572,7 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = 500
+                    topMargin = 100
                     leftMargin = 70
                     rightMargin = 70
                     bottomMargin = 50
@@ -620,7 +619,8 @@ class IndividualPollActivity : DrawerLayoutActivity() {
                     leftMargin = 70
                     rightMargin = 70
                     bottomMargin = 50
-                    topMargin = 300
+                    topMargin = 100
+                    gravity = Gravity.CENTER_HORIZONTAL
                 }
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)

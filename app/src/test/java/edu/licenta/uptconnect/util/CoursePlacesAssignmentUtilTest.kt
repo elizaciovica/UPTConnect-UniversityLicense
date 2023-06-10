@@ -16,7 +16,7 @@ class CoursePlacesAssignmentUtilTest {
         val pollChoices = createPollChoices()
         val schedules = createSchedules()
 
-        val result = mock.pollResultsAlgorithm(pollChoices, schedules)
+        val result = mock.executePollResultsAlgorithm(pollChoices, schedules)
 
         val expected = createExpectedResult(schedules)
         assertEquals(expected, result)

@@ -23,7 +23,6 @@ import edu.licenta.uptconnect.databinding.ActivitySpecialPollBinding
 import edu.licenta.uptconnect.model.ScheduleData
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetListener,
@@ -113,7 +112,7 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
             val groupList = ArrayList(groupMap.keys)
             val optionsList = mutableListOf<String>()
             val autoCompleteGroup: AutoCompleteTextView = binding.autoCompleteGroup
-            val adapterGroup = ArrayAdapter(this, R.layout.facultieslist_item, groupList)
+            val adapterGroup = ArrayAdapter(this, R.layout.dropdown_item, groupList)
 
             autoCompleteGroup.setAdapter(adapterGroup)
             autoCompleteGroup.onItemClickListener =
@@ -251,12 +250,13 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
                     val formattedTime = dateFormat.format(Date(currentTime))
                     val newsTitle = "New Poll"
                     val newsContent =
-                        "A poll was created in $chosenGroupName group, by ADMIN $studentName"
+                        "A new poll has been created by ADMIN"
                     val new = hashMapOf(
                         "title" to newsTitle,
                         "content" to newsContent,
                         "time" to formattedTime,
-                        "courseId" to chosenGroupId
+                        "courseId" to chosenGroupId,
+                        "createdBy" to studentName
                     )
                     val newsCollectionRef = db.collection("news")
                     newsCollectionRef.document()
@@ -287,7 +287,7 @@ class SpecialPollActivity : DrawerLayoutActivity(), DatePickerDialog.OnDateSetLi
     private fun setPollDurationDropDown() {
         val facultyLists = listOf("1", "2", "3", "7")
         val autoComplete: AutoCompleteTextView = binding.autoCompletePollDuration
-        val adapter = ArrayAdapter(this, R.layout.facultieslist_item, facultyLists)
+        val adapter = ArrayAdapter(this, R.layout.dropdown_item, facultyLists)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, _, i, _ ->
