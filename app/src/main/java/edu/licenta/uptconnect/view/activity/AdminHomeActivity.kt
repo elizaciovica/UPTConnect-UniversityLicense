@@ -39,25 +39,23 @@ class AdminHomeActivity : DrawerLayoutActivity() {
     }
 
     private fun initializeButtons() {
-        binding.ctienCard.setOnClickListener() {
-            val intent = Intent(this, AdminIndividualSectionActivity::class.java)
-            intent.putExtra("section", binding.ctienText.text)
-            startActivity(intent)
+        binding.ctienCard.setOnClickListener {
+            startActivityOnClick(binding.ctienText.text.toString())
         }
-        binding.ctiCard.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
+        binding.ctiCard.setOnClickListener {
+            startActivityOnClick(binding.ctiText.text.toString())
         }
-        binding.isCard.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
+        binding.isCard.setOnClickListener {
+            startActivityOnClick(binding.isText.text.toString())
         }
-        binding.infoCard.setOnClickListener() {
-            Toast.makeText(
-                this, "To be implemented", Toast.LENGTH_SHORT
-            ).show()
+        binding.infoCard.setOnClickListener {
+            startActivityOnClick(binding.infoText.text.toString())
         }
+    }
+
+    private fun startActivityOnClick(sectionText: String) {
+        val intent = Intent(this, AdminIndividualSectionActivity::class.java)
+        intent.putExtra("section", sectionText)
+        startActivity(intent)
     }
 }
