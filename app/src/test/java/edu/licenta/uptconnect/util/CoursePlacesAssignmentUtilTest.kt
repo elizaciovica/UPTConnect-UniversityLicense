@@ -4,19 +4,16 @@ import edu.licenta.uptconnect.model.PollChoice
 import edu.licenta.uptconnect.model.ScheduleData
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
 class CoursePlacesAssignmentUtilTest {
 
     @Test
     fun pollResultsAlgorithm_1() {
-        val mock = CoursePlacesAssignmentUtil()
+        val coursePlacesAssignmentUtil = CoursePlacesAssignmentUtil()
         val pollChoices = createPollChoices()
         val schedules = createSchedules()
 
-        val result = mock.executePollResultsAlgorithm(pollChoices, schedules)
+        val result = coursePlacesAssignmentUtil.executePollResultsAlgorithm(pollChoices, schedules)
 
         val expected = createExpectedResult(schedules)
         assertEquals(expected, result)
@@ -24,7 +21,7 @@ class CoursePlacesAssignmentUtilTest {
 
     private fun createExpectedResult(schedules: List<ScheduleData>): HashMap<ScheduleData, MutableList<String>> {
         return hashMapOf(
-            Pair(schedules[1], mutableListOf("Florin345", "Alex234")),
+            Pair(schedules[1], mutableListOf("Florin345", "Elena234")),
             Pair(schedules[0], mutableListOf("Eliza123"))
         )
     }
@@ -50,8 +47,8 @@ class CoursePlacesAssignmentUtilTest {
 
         return mutableListOf(
             PollChoice("999", "0", "Florin345", optionsFlorin),
-            PollChoice("999", "2", "Alex234", optionsAlex),
-            PollChoice("999", "1", "Eliza123", optionsEliza)
+            PollChoice("998", "2", "Elena234", optionsAlex),
+            PollChoice("997", "1", "Eliza123", optionsEliza)
         )
     }
 
