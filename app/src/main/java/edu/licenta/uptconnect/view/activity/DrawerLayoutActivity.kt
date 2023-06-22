@@ -58,7 +58,7 @@ open class DrawerLayoutActivity : AppCompatActivity() {
             1 -> navigation.setCheckedItem(R.id.home)
             2 -> navigation.setCheckedItem(R.id.edit_profile)
         }
-        getStudentEmail()
+        getStudentEmail(navigation)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -96,7 +96,7 @@ open class DrawerLayoutActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun getStudentEmail() {
+    private fun getStudentEmail(navigation: NavigationView) {
         val studentsDatabase = Firebase.firestore
         val studentFirebaseId = FirebaseAuth.getInstance().currentUser?.uid
         val studentDoc = studentsDatabase.collection("students").document(studentFirebaseId!!)
@@ -106,8 +106,12 @@ open class DrawerLayoutActivity : AppCompatActivity() {
         studentDoc.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    var emailFirebaseTextView = findViewById<TextView>(R.id.email_firebase)
-                    emailFirebaseTextView.text = documentSnapshot.getString("Email")
+                    val emailFirebaseTextView = navigation.findViewById<TextView>(R.id.email_firebase)
+                    if(emailFirebaseTextView != null) {
+                        emailFirebaseTextView.text = documentSnapshot.getString("Email")
+                    } else {
+                        Log.d(ContentValues.TAG, "TextView is null")
+                    }
                 }
             }
             .addOnFailureListener { exception ->

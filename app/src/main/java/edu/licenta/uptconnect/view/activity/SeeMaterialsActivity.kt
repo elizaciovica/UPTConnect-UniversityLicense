@@ -93,8 +93,8 @@ class SeeMaterialsActivity : DrawerLayoutActivity() {
                             recyclerView.adapter = ImageAdapter(imageList)
                             recyclerView.layoutManager = LinearLayoutManager(this)
                             recyclerView.visibility = View.VISIBLE
-                            progressBar.visibility = View.GONE
-
+                            progressBar.visibility = View.INVISIBLE
+                            binding.viewForNoImages.visibility = View.GONE
                         }
                     }
                 }
@@ -140,8 +140,8 @@ class SeeMaterialsActivity : DrawerLayoutActivity() {
                                 recyclerView.adapter = adapter
                                 recyclerView.layoutManager = LinearLayoutManager(this)
                                 recyclerView.visibility = View.VISIBLE
-                                progressBar.visibility = View.GONE
-
+                                progressBar.visibility = View.INVISIBLE
+                                binding.viewForNoImages.visibility = View.GONE
                             }
                         }
                     }
